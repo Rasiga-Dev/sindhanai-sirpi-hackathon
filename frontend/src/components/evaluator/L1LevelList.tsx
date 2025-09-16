@@ -2,41 +2,42 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BMCLayout from '../BMCLayout';
+import { API_BASE } from '../../config/api';
 
 
 export default function L1LevelList({ projects, username }) {
     const [isLoading, setIsLoading] = useState(false);
 
-    
+
     const [showModal, setShowModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
     const [projectList, setProjects] = useState(projects);
 
     useEffect(() => {
-    if (projects && projects.length > 0) {
-        setProjects(projects);
-        setIsLoading(false);
-    } else {
-        fetchL1LevelList(); // only if no data came from parent
-    }
-}, [projects]);
+        if (projects && projects.length > 0) {
+            setProjects(projects);
+            setIsLoading(false);
+        } else {
+            fetchL1LevelList(); // only if no data came from parent
+        }
+    }, [projects]);
 
 
     const fetchL1LevelList = async () => {
-            setIsLoading(true); // start loading
-            try {
-                const token = localStorage.getItem('evaluatorToken');
-                const response = await axios.get('http://localhost:11129/api/evaluator/level-1-list', {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setProjects(response.data);
-            } catch (err) {
-                console.error('Summary fetch error:', err);
-            } finally {
-                setIsLoading(false); // end loading
-            }
-        };
-        
+        setIsLoading(true); // start loading
+        try {
+            const token = localStorage.getItem('evaluatorToken');
+            const response = await axios.get(`${API_BASE}/api/evaluator/level-1-list`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setProjects(response.data);
+        } catch (err) {
+            console.error('Summary fetch error:', err);
+        } finally {
+            setIsLoading(false); // end loading
+        }
+    };
+
     const openModal = (project) => {
         setSelectedProject(project);
         setShowModal(true);
@@ -46,7 +47,7 @@ export default function L1LevelList({ projects, username }) {
         setShowModal(false);
         setSelectedProject(null);
     };
-   
+
     return (
         <div>
             <h2 className="text-lg font-bold mb-4">Level 1 Accepted Projects List</h2>
@@ -55,7 +56,7 @@ export default function L1LevelList({ projects, username }) {
             {isLoading ? (
                 <div className="text-center py-10 text-lg font-medium text-gray-600">
                     Loading projects...
-                     <div className="flex justify-center items-center py-10">
+                    <div className="flex justify-center items-center py-10">
                         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-red-800"></div>
                     </div>
                 </div>
@@ -119,7 +120,7 @@ export default function L1LevelList({ projects, username }) {
                         </tbody>
 
                     </table>
-                   
+
 
                 </div>
             )}

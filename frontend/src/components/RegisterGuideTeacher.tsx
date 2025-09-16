@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import default styles
+import { API_BASE } from '../config/api';
 
 const RegisterGuideTeacher = () => {
   const [teacherName, setTeacherName] = useState('');
@@ -55,7 +56,7 @@ const RegisterGuideTeacher = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:11129/api/school/register-guide-teacher', {
+      const response = await axios.post(`${API_BASE}/api/school/register-guide-teacher`, {
         teacherName,
         phoneNumber,
         email,

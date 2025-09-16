@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_BASE } from '../config/api';
 
 const SchoolDetails = () => {
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:11129/api/schools')
+    axios.get(`${API_BASE}/api/schools`)
       .then((response) => {
         setSchools(response.data); // Set the schools data
         setLoading(false); // Set loading to false once data is fetched

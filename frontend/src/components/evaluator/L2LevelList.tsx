@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// const L2LevelList = () => {
-//   return (
-//     <div>L2LevelList</div>
-//   )
-// }
-
-// export default L2LevelList
 
 
 import React, { useEffect, useState } from 'react';
@@ -111,11 +102,6 @@ export default function L2LevelList({ projects, username }) {
                                         {project.evaluationScore ? (
                                             <>
                                                 <div>{project.evaluationScore.score}</div>
-                                                {/* <div>Status: {project.evaluationScore.status}</div>
-                                                <div>
-                                                    Evaluated At:{' '}
-                                                    {new Date(project.evaluationScore.evaluatedAt).toLocaleString()}
-                                                </div> */}
                                             </>
                                         ) : (
                                             <div className="text-gray-500 italic">No score given yet</div>

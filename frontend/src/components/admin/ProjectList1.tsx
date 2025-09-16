@@ -1,75 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import ProjectDetailModal from './ProjectDetailModal';
-
-// const ProjectList1 = () => {
-//   const [projects, setProjects] = useState([]);
-//   const [selectedProject, setSelectedProject] = useState(null);
-
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:11129/api/admin/all-projects")
-//       .then((res) => setProjects(res.data))
-//       .catch((err) => console.error(err));
-//   }, []);
-
-//   return (
-//     <div className="p-6">
-//       <h2 className="text-2xl font-bold mb-4">📁 Submitted Projects</h2>
-
-//       <div className="overflow-x-auto">
-//         <table className="min-w-full bg-white border">
-//           <thead>
-//             <tr className="bg-gray-100 text-left text-sm font-semibold">
-//               <th className="p-3 border">Project ID</th>
-//               <th className="p-3 border">Title</th>
-//               <th className="p-3 border">School</th>
-//               <th className="p-3 border">District</th>
-//               <th className="p-3 border">Stage</th>
-//               <th className="p-3 border">Status</th>
-//               <th className="p-3 border">Action</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {projects.map((proj, idx) => (
-//               <tr key={idx} className="hover:bg-gray-50 text-sm">
-//                 <td className="p-3 border">{proj.projectId}</td>
-//                 <td className="p-3 border">{proj.title}</td>
-//                 <td className="p-3 border">{proj.schoolName}</td>
-//                 <td className="p-3 border">{proj.district}</td>
-//                 <td className="p-3 border">{proj.stage}</td>
-//                 <td className="p-3 border">{proj.status || "Pending"}</td>
-//                 <td className="p-3 border">
-//                   <button
-//                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-//                     onClick={() =>
-//                       setSelectedProject({
-//                         schoolId: proj.projectId.split("-")[0],
-//                         index: proj.projectId.split("-")[1],
-//                       })
-//                     }
-//                   >
-//                     View
-//                   </button>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-
-//       {selectedProject && (
-//         <ProjectDetailModal
-//           project={selectedProject}
-//           onClose={() => setSelectedProject(null)}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ProjectList1;
-
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -79,6 +7,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { API_BASE } from "../../config/api";
 
 
 const ProjectList1 = () => {
@@ -90,15 +19,9 @@ const ProjectList1 = () => {
   const [filterStage, setFilterStage] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:11129/api/admin/all-projects")
-//       .then((res) => setProjects(res.data))
-//       .catch((err) => console.error(err));
-//   }, []);
 useEffect(() => {
   axios
-    .get("http://localhost:11129/api/admin/all-projects")
+    .get(`${API_BASE}/api/admin/all-projects`)
     .then((res) => {
       
       setProjects(res.data); // Set data to state

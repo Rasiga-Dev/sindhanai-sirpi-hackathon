@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Loader, AlertCircle } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE } from '../config/api';
 
 export function ForgotPassword() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export function ForgotPassword() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:11129/api/auth/forgot-password', { email });
+      const response = await axios.post(`${API_BASE}/api/auth/forgot-password`, { email });
       setSuccess(true);
       navigate('/verify-otp', { state: { email } });
     } catch (err: any) {

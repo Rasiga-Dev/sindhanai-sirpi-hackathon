@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_BASE } from '../../config/api';
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -11,7 +12,7 @@ const ProjectList = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:11129/api/admin/project-list');
+      const response = await axios.get(`${API_BASE}/api/admin/project-list`);
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching project list:', error);

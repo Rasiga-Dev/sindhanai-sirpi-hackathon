@@ -83,17 +83,6 @@ export function Gallery() {
       className="space-y-16 sm:px-6 lg:px-8 max-w-8xl mx-auto"
     >
       <section className="relative bg-white p-0 rounded-3xl shadow-2xl overflow-hidden">
-        {/* Video */}
-        {/* <video
-          className="w-full h-[600px] object-cover rounded-3xl" // height increased
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/videos/hackathon.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video> */}
         <ImageSlider/>
 
         {/* Mirror Glass Overlay */}

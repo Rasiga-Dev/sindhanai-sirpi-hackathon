@@ -1,121 +1,9 @@
-// import React, { useState } from 'react';
 
-// const BankAccountDetails = () => {
-//   const [formData, setFormData] = useState({
-//     accountHolder: '',
-//     accountNo: '',
-//     branch: '',
-//     ifsc: '',
-//     bankName: '',
-//     panNo: '',
-//     aadharNo: '',
-//     photo: null,
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value, files } = e.target;
-//     if (name === 'photo') {
-//       setFormData({ ...formData, [name]: files[0] });
-//     } else {
-//       setFormData({ ...formData, [name]: value });
-//     }
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     console.log('Form Data:', formData);
-//     // You can send formData to backend API here
-//   };
-
-//   return (
-//     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-xl">
-//       <h2 className="text-2xl font-bold mb-6 text-center">Bank Account Details</h2>
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         <input
-//           type="text"
-//           name="accountHolder"
-//           placeholder="Account Holder Name"
-//           value={formData.accountHolder}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//           required
-//         />
-//         <input
-//           type="text"
-//           name="accountNo"
-//           placeholder="Account Number"
-//           value={formData.accountNo}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//           required
-//         />
-//         <input
-//           type="text"
-//           name="branch"
-//           placeholder="Branch"
-//           value={formData.branch}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//         />
-//         <input
-//           type="text"
-//           name="ifsc"
-//           placeholder="IFSC Code"
-//           value={formData.ifsc}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//         />
-//         <input
-//           type="text"
-//           name="bankName"
-//           placeholder="Bank Name"
-//           value={formData.bankName}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//         />
-//         <input
-//           type="text"
-//           name="panNo"
-//           placeholder="PAN Number"
-//           value={formData.panNo}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//         />
-//         <input
-//           type="text"
-//           name="aadharNo"
-//           placeholder="Aadhar Number"
-//           value={formData.aadharNo}
-//           onChange={handleChange}
-//           className="w-full border p-2 rounded"
-//         />
-//         <div>
-//           <label className="block mb-2">Passport Size Photo:</label>
-//           <input
-//             type="file"
-//             name="photo"
-//             accept="image/*"
-//             onChange={handleChange}
-//             className="w-full"
-//           />
-//         </div>
-
-//         <button
-//           type="submit"
-//           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-//         >
-//           Submit
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default BankAccountDetails;
 
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../../config/api";
 
 const BankAccountDetails = ({ id, title }) => {
   const [photo, setPhoto] = useState(null);
@@ -138,7 +26,7 @@ const BankAccountDetails = ({ id, title }) => {
     // ✅ Fetch already submitted details on mount
     const fetchBankDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:11129/api/schools/getBank/${id}`);
+        const res = await axios.get(`${API_BASE}/api/schools/getBank/${id}`);
         if (res.data?.status === "bankDetailsUpdated") {
           setSubmitted(true); // Already submitted, show message
         }
@@ -174,7 +62,7 @@ const BankAccountDetails = ({ id, title }) => {
         }
       });
 
-      await axios.put(`http://localhost:11129/api/schools/updateBank/${id}`, data, {
+      await axios.put(`${API_BASE}/api/schools/updateBank/${id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

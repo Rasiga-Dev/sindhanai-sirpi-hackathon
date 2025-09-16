@@ -74,45 +74,6 @@ export function Schedule() {
           <img src="event.png" alt="Schedule" className="w-100 h-90 rounded-xl" />
         </div>
 
-        {/* <div className="rounded-xl p-6">
-          <h2 className="text-2xl font-bold mb-6 text-red-800 flex items-center gap-2">
-            <AlarmClock className="w-6 h-6" /> Event Timeline
-          </h2>
-          <div className="space-y-6">
-            {[
-              { date: "June 1, 2025", title: "Registration Opens", description: "Start of participant registration and team formation" },
-              { date: "July 31, 2025", title: "Registration Closes", description: "Last date to register your team" },
-              { date: "July 5, 2025", title: "Idea Submission", description: "Submit your Project proposals" },
-              { date: "September 4, 2025", title: "Hackathon Day", description: "Main event begins!" }
-            ].map((event, index) => (
-              <div key={index} className="flex items-start">
-                <div className="w-10 h-10 bg-red-100 text-red-900 font-bold rounded-full flex items-center justify-center shadow-inner">
-                  {index + 1}
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-semibold">{event.title}</h3>
-                  <p className="text-gray-600 text-sm">{event.date}</p>
-                  <p className="text-gray-700 mt-1">{event.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-2 gap-4 m-5">
-            <div className="bg-red-200 p-4 rounded-lg text-center shadow">
-              <Calendar className="w-6 h-6 text-red-900 mx-auto mb-2" />
-              <span className="text-sm font-semibold">June 01 - September 05</span>
-            </div>
-            <div className="bg-red-200 p-4 rounded-lg text-center shadow">
-              <Clock className="w-6 h-6 text-red-900 mx-auto mb-2" />
-              <span className="text-sm font-semibold">24 Hours</span>
-            </div>
-          </div>
-        </div> */}
-
-
-
-
-
         <div className="rounded-xl p-6">
           <h2 className="text-2xl font-bold mb-6 text-red-800 flex items-center gap-2">
             <CheckCircle className="w-6 h-6" /> Event Flow
@@ -281,14 +242,6 @@ export function Schedule() {
         </div>
       </div>
 
-      {/* Countdown Section */}
-      {/* <div className="bg-red-100 p-8 rounded-xl text-center shadow">
-        <Timer className="mx-auto text-red-800 mb-4 w-8 h-8 animate-pulse" />
-        <h2 className="text-2xl font-bold text-red-800">⏳ Countdown to Hackathon</h2>
-        <p className="text-gray-700 text-sm mt-2">
-          Only <strong className="text-red-700">15 Days</strong> left! Gear up to innovate, collaborate & shine!
-        </p>
-      </div> */}
     </div>
   );
 }

@@ -1,104 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { FaSignOutAlt, FaUserCircle, FaList } from 'react-icons/fa';
-// import axios from 'axios';
-// import { toast, ToastContainer } from 'react-toastify';
-// import L1Level from './evaluator/L1Level';
-
-// export default function EvaluatorDashboard() {
-//   const navigate = useNavigate();
-//   const [projects, setProjects] = useState([]);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const username = localStorage.getItem('evaluatorName') || 'Evaluator';
-
-//   useEffect(() => {
-//     const token = localStorage.getItem('evaluatorToken');
-//     if (!token) {
-//       navigate('/evaluator-login');
-//       return;
-//     }
-//     fetchL1Projects();
-//   }, [navigate]);
-
-//   const fetchL1Projects = async () => {
-//     setIsLoading(true);
-//     try {
-//       const token = localStorage.getItem('evaluatorToken');
-//       const response = await axios.get('http://localhost:11129/api/evaluator/assigned-projects', {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       console.log('Fetched L1 projects:', response.data); // ✅ fixed line
-//       setProjects(response.data.filter((p) => p.evaluationStatus === 'pending'));
-//     } catch (error) {
-//       console.error('Error fetching L1 projects:', error);
-//       toast.error('Failed to fetch L1 projects');
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-
-//   const handleLogout = () => {
-//     localStorage.removeItem('evaluatorToken');
-//     localStorage.removeItem('evaluatorName');
-//     localStorage.removeItem('evaluatorId');
-//     navigate('/evaluator-login');
-//   };
-
-//   return (
-//     <div className="flex h-screen bg-gray-100">
-//       {/* Sidebar */}
-//       <div className="w-64 bg-red-800 text-white">
-//         <div className="p-4">
-//           <h2 className="text-xl font-bold mb-8">Evaluator Panel</h2>
-//           <nav>
-//             <button
-//               className="flex items-center space-x-2 w-full px-4 py-2 rounded bg-red-900"
-//               disabled
-//             >
-//               <FaList />
-//               <span>L1 Level</span>
-//             </button>
-//           </nav>
-//         </div>
-//       </div>
-
-//       {/* Main Content */}
-//       <div className="flex-1 flex flex-col overflow-hidden">
-//         {/* Header */}
-//         <header className="bg-white shadow-md">
-//           <div className="flex justify-between items-center px-6 py-4">
-//             <h1 className="text-xl font-semibold text-gray-800">L1 Level Dashboard</h1>
-//             <div className="flex items-center space-x-4">
-//               <div className="flex items-center space-x-2">
-//                 <FaUserCircle className="text-2xl text-gray-600" />
-//                 <span className="text-gray-700">{username}</span>
-//               </div>
-//               <button
-//                 onClick={handleLogout}
-//                 className="flex items-center space-x-2 text-red-600 hover:text-red-800"
-//               >
-//                 <FaSignOutAlt />
-//                 <span>Logout</span>
-//               </button>
-//             </div>
-//           </div>
-//         </header>
-
-//         {/* Main Content Area */}
-//         <main className="flex-1 overflow-auto p-6">
-//           {isLoading ? (
-//             <div className="text-center py-4">Loading...</div>
-//           ) : (
-//             <L1Level projects={projects} onProjectUpdate={setProjects} />
-//           )}
-//         </main>
-//       </div>
-
-//       <ToastContainer />
-//     </div>
-//   );
-// }
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaUserCircle, FaList } from 'react-icons/fa';
@@ -108,6 +7,7 @@ import L1Level from './evaluator/L1Level';
 import L2Level from './evaluator/L2Level';
 import L1LevelList from './evaluator/L1LevelList';
 import L2LevelList from './evaluator/L2LevelList';
+import { API_BASE } from '../config/api';
 
 export default function EvaluatorDashboard() {
   const navigate = useNavigate();
@@ -120,20 +20,6 @@ export default function EvaluatorDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const username = localStorage.getItem('evaluatorName') || 'Evaluator';
   const [activeLevel, setActiveLevel] = useState('L1'); // default L1
-
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('evaluatorToken');
-  //   if (!token) {
-  //     navigate('/evaluator-login');
-  //     return;
-  //   }
-  //   fetchL1Projects();
-  //   fetchL2Projects();
-  //   fetchL1ProjectsList();
-  //   fetchL2ProjectsList();
-  // }, [navigate]);
-
 
   useEffect(() => {
     const token = localStorage.getItem('evaluatorToken');
@@ -166,7 +52,7 @@ export default function EvaluatorDashboard() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('evaluatorToken');
-      const response = await axios.get('http://localhost:11129/api/evaluator/assigned-projects', {
+      const response = await axios.get(`${API_BASE}/api/evaluator/assigned-projects`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -189,7 +75,7 @@ export default function EvaluatorDashboard() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('evaluatorToken');
-      const response = await axios.get('http://localhost:11129/api/evaluator/level-1-list', {
+      const response = await axios.get(`${API_BASE}/api/evaluator/level-1-list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -207,7 +93,7 @@ export default function EvaluatorDashboard() {
   const fetchL2Projects = async () => {
     try {
       const token = localStorage.getItem('evaluatorToken');
-      const res = await axios.get("http://localhost:11129/api/evaluator/projects-to-evaluate", {
+      const res = await axios.get(`${API_BASE}/api/evaluator/projects-to-evaluate`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { evaluatorName: username }  // <-- IMPORTANT
       });
@@ -222,7 +108,7 @@ export default function EvaluatorDashboard() {
   const fetchL2ProjectsList = async () => {
     try {
       const token = localStorage.getItem('evaluatorToken');
-      const res = await axios.get("http://localhost:11129/api/evaluator/level-2-list", {
+      const res = await axios.get(`${API_BASE}/api/evaluator/level-2-list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -326,13 +212,7 @@ export default function EvaluatorDashboard() {
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
           ) : activeLevel === 'L1' ? (
-            // <L1Level
-            //   projects={projects}
-            //   onStatusChange={handleStatusChange}
-            //   username={username}
-
-            //   refreshProjects={fetchL1Projects}
-            // />
+           
             <L1Level
               projects={projects}
               onStatusChange={handleStatusChange}
@@ -343,12 +223,7 @@ export default function EvaluatorDashboard() {
             />
 
           ) : activeLevel === 'L2' ? (
-            // <L2Level
-            //   projects={l2Projects}
-            //   // onStatusChange={handleStatusChange}
-            //   username={username}
-            //   refreshProjects={fetchL2Projects} // pass this function down
-            // />
+            
             <L2Level
               projects={l2Projects}
               username={username}
@@ -360,16 +235,16 @@ export default function EvaluatorDashboard() {
           ) : activeLevel === 'L3' ? (
             <L1LevelList
               projects={l1ProjectsList}
-              // onStatusChange={handleStatusChange}
+            
               username={username}
-            // pass this function down
+         
             />
           ) : activeLevel === 'L4' ? (
             <L2LevelList
               projects={l2ProjectsList}
-              // onStatusChange={handleStatusChange}
+             
               username={username}
-            // pass this function down
+          
             />
           ) : (
             <div className="text-center py-4">Select a level to view projects</div>

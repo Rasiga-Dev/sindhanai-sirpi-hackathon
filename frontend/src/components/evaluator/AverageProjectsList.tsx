@@ -8,6 +8,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE } from '../../config/api';
 
 
 interface Score {
@@ -46,7 +47,7 @@ const AverageProjectsList = () => {
   const fetchProjects = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:11129/api/evaluator/average-projects');
+      const response = await axios.get(`${API_BASE}/api/evaluator/average-projects`);
       setProjects(response.data);
     } catch (err) {
       console.error('Error fetching projects:', err);
@@ -62,7 +63,7 @@ const AverageProjectsList = () => {
     avg: string
   ) => {
     try {
-      await axios.put('http://localhost:11129/api/evaluator/update-evaluation-status', {
+      await axios.put(`${API_BASE}/api/evaluator/update-evaluation-status`, {
         schoolId,
         projectId,
         status,
@@ -120,13 +121,6 @@ const AverageProjectsList = () => {
         <div className="flex justify-between items-center px-6 py-4">
           <h1 className="text-xl font-semibold text-white">Evaluator Projetcs View Dashboard</h1>
           <div className="flex items-center space-x-4">
-            {/* <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-white text-red-800 flex items-center justify-center font-semibold">
-                {username?.charAt(0).toUpperCase()}
-              </div>
-              <span className="text-white">{username}</span>
-            </div> */}
-
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 text-white hover:text-white"
@@ -152,116 +146,6 @@ const AverageProjectsList = () => {
 
       ) : (
 
-        // <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-        //   {/* Scroll wrapper */}
-        //   <div className="max-h-[70vh] overflow-y-auto overflow-x-auto">
-        //     <table className="w-full table-fixed text-sm text-gray-700">
-        //       <thead className="sticky top-0 z-10 bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider border-b border-gray-300">
-        //         <tr>
-        //           <th className="px-6 py-4 text-left w-[40px]">#</th>
-        //           <th className="px-6 py-4 text-left w-[180px]">Project Title</th>
-        //           <th className="px-6 py-4 text-left w-[250px]">Description</th>
-        //           <th className="px-6 py-4 text-left w-[220px]">Problem</th>
-        //           <th className="px-6 py-4 text-left w-[220px]">Solution</th>
-        //           <th className="px-6 py-4 text-center w-[100px]">BMC</th>
-        //           <th className="px-6 py-4 text-left w-[200px]">Evaluator Scores</th>
-        //           <th
-        //             className="px-6 py-4 text-center w-[100px] cursor-pointer select-none flex items-center justify-center gap-1"
-        //             onClick={handleSortByAverage}
-        //           >
-        //             <span className="font-semibold text-xs uppercase text-gray-600">Avg.</span>
-        //             {sortOrder === 'asc' ? (
-        //               <FaArrowUp className="text-base text-gray-700" />
-        //             ) : (
-        //               <FaArrowDown className="text-base text-gray-700" />
-        //             )}
-        //           </th>
-
-
-        //           <th className="px-6 py-4 text-center w-[350px]">Actions</th>
-        //         </tr>
-        //       </thead>
-
-        //       <tbody className="divide-y divide-gray-100">
-        //         {projects.map((project, idx) => (
-        //           <tr
-        //             key={project.projectId}
-        //             className="hover:bg-gray-50 transition duration-200 ease-in-out"
-        //           >
-        //             <td className="px-6 py-4 w-[40px] font-medium text-gray-800">{idx + 1}</td>
-        //             <td className="px-6 py-4 w-[180px] font-semibold text-blue-900 break-words">{project.projectTitle}</td>
-        //             <td className="px-6 py-4 w-[250px] font-semibold text-blue-900 break-words">{project.projectDescription}</td>
-        //             <td className="px-6 py-4 w-[220px] font-semibold text-blue-900 break-words">{project.problemStatement}</td>
-        //             <td className="px-6 py-4 w-[220px] font-semibold text-blue-900 break-words">{project.solution}</td>
-        //             <td className="px-6 py-4 w-[100px] text-center">
-        //               <button
-        //                 onClick={() => openModal(project)}
-        //                 className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-blue-200 transition"
-        //               >
-        //                 View BMC
-        //               </button>
-        //             </td>
-        //             <td className="px-6 py-4 w-[220px]">
-        //               <ul className="space-y-1">
-        //                 {project.evaluationScores.map((score, i) => (
-        //                   <li key={i}>
-        //                     <span className="text-gray-800 font-medium capitalize">{score.evaluatorName}</span>:{" "}
-        //                     <span
-        //                       className={`inline-block px-2 py-0.5 rounded-full text-white text-xs font-semibold ${score.score >= 7
-        //                         ? "bg-emerald-500"
-        //                         : score.score >= 5
-        //                           ? "bg-yellow-500"
-        //                           : "bg-rose-500"
-        //                         }`}
-        //                     >
-        //                       {score.score}
-        //                     </span>
-        //                   </li>
-        //                 ))}
-        //               </ul>
-        //             </td>
-        //             <td className="px-6 py-4 w-[100px] text-center">
-        //               <span className="inline-block bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-sm shadow">
-        //                 {calculateAverage(project.evaluationScores)}
-        //               </span>
-        //             </td>
-        //             <td className="px-6 py-4 w-[350px] text-center space-x-2">
-        //               <button
-        //                 onClick={() =>
-        //                   updateEvaluationStatus(
-        //                     project.schoolId,
-        //                     project.projectId,
-        //                     'filtered',
-        //                     calculateAverage(project.evaluationScores)
-        //                   )
-        //                 }
-        //                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-md text-xs transition shadow"
-        //               >
-        //                 Accept
-        //               </button>
-
-
-        //               <button
-        //                 onClick={() =>
-        //                   updateEvaluationStatus(
-        //                     project.schoolId,
-        //                     project.projectId,
-        //                     'not-filtered',
-        //                     calculateAverage(project.evaluationScores)
-        //                   )
-        //                 }
-        //                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-xs transition shadow"
-        //               >
-        //                 Reject
-        //               </button>
-        //             </td>
-
-        //           </tr>
-        //         ))}
-        //       </tbody>
-        //     </table>
-        //   </div>
-        // </div>
          <div className="grid gap-4 max-h-[70vh] overflow-y-auto p-4">
       {projects.map((project, idx) => (
         <div

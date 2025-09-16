@@ -1,165 +1,9 @@
 
-
-
-// // import React, { useEffect, useState } from 'react';
-// // import axios from 'axios';
-
-// // const DPMPannel = () => {
-// //   const [evaluators, setEvaluators] = useState([]);
-// //   const district = localStorage.getItem('dpmDistrict');
-
-// //   useEffect(() => {
-// //     if (district) {
-// //       axios
-// //         .get(`http://localhost:11129/api/dpm/by-district/${district}`)
-// //         .then((res) => {
-// //           setEvaluators(res.data);
-// //         });
-// //     }
-// //   }, [district]);
-
-// //   return (
-// //     <div className="p-6">
-// //       <h2 className="text-2xl font-bold mb-4">Evaluators from {district}</h2>
-
-// //       <div className="overflow-x-auto">
-// //         <table className="min-w-full border border-gray-300">
-// //           <thead>
-// //             <tr className="bg-gray-100">
-// //               <th className="border px-4 py-2">Username</th>
-// //               <th className="border px-4 py-2">Email</th>
-// //               <th className="border px-4 py-2">Phone</th>
-// //               <th className="border px-4 py-2">Expertise</th>
-// //               <th className="border px-4 py-2">Status</th>
-// //               <th className="border px-4 py-2">Accepted</th>
-// //               <th className="border px-4 py-2">Pending</th>
-// //               <th className="border px-4 py-2">Rejected</th>
-// //               <th className="border px-4 py-2">Total (L1)</th>
-// //               <th className="border px-4 py-2">Total (L2)</th>
-// //             </tr>
-// //           </thead>
-// //           <tbody>
-// //             {evaluators.map((ev, idx) => (
-// //               <tr key={idx}>
-// //                 <td className="border px-4 py-2">{ev.username}</td>
-// //                 <td className="border px-4 py-2">{ev.email}</td>
-// //                 <td className="border px-4 py-2">{ev.phone}</td>
-// //                 <td className="border px-4 py-2">{ev.expertise?.join(', ')}</td>
-// //                 <td className="border px-4 py-2">{ev.status}</td>
-// //                 <td className="border px-4 py-2">{ev.summary?.accepted || 0}</td>
-// //                 <td className="border px-4 py-2">{ev.summary?.pending || 0}</td>
-// //                 <td className="border px-4 py-2">{ev.summary?.rejected || 0}</td>
-// //                 <td className="border px-4 py-2">{ev.summary?.total || 0}</td>
-// //                 <td className="border px-4 py-2">{ev.level2Summary?.total || 0}</td>
-// //               </tr>
-// //             ))}
-// //           </tbody>
-// //         </table>
-// //       </div>
-// //     </div>
-// //   );
-// // };
-
-// // export default DPMPannel;
-
-
-
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-
-// const DPMPannel = () => {
-//   const [evaluators, setEvaluators] = useState([]);
-//   const [activeTab, setActiveTab] = useState('school'); // school | evaluator
-//   const district = localStorage.getItem('dpmDistrict');
-
-//   useEffect(() => {
-//     if (district && activeTab === 'evaluator') {
-//       axios
-//         .get(`http://localhost:11129/api/dpm/by-district/${district}`)
-//         .then((res) => {
-//           setEvaluators(res.data);
-//         });
-//     }
-//   }, [district, activeTab]);
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 p-4">
-//       <h2 className="text-2xl font-bold mb-6">District Dashboard - {district}</h2>
-
-//       {/* Menu Tabs */}
-//       <div className="flex space-x-4 mb-6">
-//         <button
-//           onClick={() => setActiveTab('school')}
-//           className={`px-4 py-2 rounded ${
-//             activeTab === 'school' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border'
-//           }`}
-//         >
-//           School
-//         </button>
-//         <button
-//           onClick={() => setActiveTab('evaluator')}
-//           className={`px-4 py-2 rounded ${
-//             activeTab === 'evaluator' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border'
-//           }`}
-//         >
-//           Evaluator
-//         </button>
-//       </div>
-
-//       {/* Tab Content */}
-//       {activeTab === 'school' && (
-//         <div className="bg-white p-6 rounded shadow">
-//           <h3 className="text-xl font-semibold mb-4">School Details</h3>
-//           <p className="text-gray-600">[ Add school-specific content here ]</p>
-//         </div>
-//       )}
-
-//       {activeTab === 'evaluator' && (
-//         <div className="bg-white p-6 rounded shadow overflow-x-auto">
-//           <h3 className="text-xl font-semibold mb-4">Evaluators from {district}</h3>
-//           <table className="min-w-full border border-gray-300 text-sm">
-//             <thead className="bg-gray-100 text-gray-700">
-//               <tr>
-//                 <th className="border px-4 py-2">Username</th>
-//                 <th className="border px-4 py-2">Email</th>
-//                 <th className="border px-4 py-2">Phone</th>
-//                 <th className="border px-4 py-2">Expertise</th>
-//                 <th className="border px-4 py-2">Status</th>
-//                 <th className="border px-4 py-2">Accepted</th>
-//                 <th className="border px-4 py-2">Pending</th>
-//                 <th className="border px-4 py-2">Rejected</th>
-//                 <th className="border px-4 py-2">Total (L1)</th>
-//                 <th className="border px-4 py-2">Total (L2)</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {evaluators.map((ev, idx) => (
-//                 <tr key={idx} className="hover:bg-gray-50">
-//                   <td className="border px-4 py-2">{ev.username}</td>
-//                   <td className="border px-4 py-2">{ev.email}</td>
-//                   <td className="border px-4 py-2">{ev.phone}</td>
-//                   <td className="border px-4 py-2">{ev.expertise?.join(', ')}</td>
-//                   <td className="border px-4 py-2">{ev.status}</td>
-//                   <td className="border px-4 py-2">{ev.summary?.accepted || 0}</td>
-//                   <td className="border px-4 py-2">{ev.summary?.pending || 0}</td>
-//                   <td className="border px-4 py-2">{ev.summary?.rejected || 0}</td>
-//                   <td className="border px-4 py-2">{ev.summary?.total || 0}</td>
-//                   <td className="border px-4 py-2">{ev.level2Summary?.total || 0}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default DPMPannel;
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import { API_BASE } from '../../config/api';
 
 const DPMPannel = () => {
   const navigate = useNavigate();
@@ -172,7 +16,7 @@ const DPMPannel = () => {
 
   useEffect(() => {
     if (district && activeTab === 'school') {
-      axios.get(`http://localhost:11129/api/dpm/schools/by-district/${district}`)
+      axios.get(`${API_BASE}/api/dpm/schools/by-district/${district}`)
         .then((res) => {
           setSchools(res.data);
         })
@@ -183,7 +27,7 @@ const DPMPannel = () => {
 
 
     if (district && activeTab === 'evaluator') {
-      axios.get(`http://localhost:11129/api/dpm/by-district/${district}`)
+      axios.get(`${API_BASE}/api/dpm/by-district/${district}`)
         .then((res) => setEvaluators(res.data));
     }
   }, [district, activeTab]);
@@ -235,12 +79,6 @@ const handleLogout = () => {
                 Logout
               </button>
         </div>
-
-
-
-
-
-
 
         {/* School Search + Total Projects */}
         {activeTab === 'school' && (
@@ -311,7 +149,6 @@ const handleLogout = () => {
 
         {activeTab === 'evaluator' && (
           <div className="bg-white rounded-lg shadow p-6 overflow-x-auto">
-            {/* <h3 className="text-xl font-semibold mb-4">Evaluators from {district}</h3> */}
             <table className="min-w-full text-sm border border-gray-300">
               <thead className="bg-gray-100 text-gray-700">
                 <tr>

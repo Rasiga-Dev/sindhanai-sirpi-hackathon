@@ -6,6 +6,7 @@ import { School, Lock, Loader } from 'lucide-react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE } from '../config/api';
 
 export function SchoolLogin() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export function SchoolLogin() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:11129/api/schools/login', {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE}/api/schools/login`, {
         udiseCode,
         password,
       });

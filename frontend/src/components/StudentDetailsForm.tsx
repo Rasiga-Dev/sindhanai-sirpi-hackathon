@@ -245,15 +245,6 @@ const StudentDetailsForm: React.FC<StudentDetailsFormProps> = ({ teamMemberCount
         </div>
       ))}
 
-      {/* <div className="pt-6 flex justify-between"> */}
-
-
-        {/* <button
-          type="submit"
-          className="px-6 py-3 bg-red-800 text-white rounded-md hover:bg-red-900 transition-colors duration-300 font-medium"
-        >
-          Save & Continue
-        </button> */}
         <div className="flex justify-between mt-4">
           <button
             type="button"
@@ -271,7 +262,7 @@ const StudentDetailsForm: React.FC<StudentDetailsFormProps> = ({ teamMemberCount
           </button>
         </div>
 
-      {/* </div> */}
+    
 
       <ToastContainer position="top-center" autoClose={3000} />
     </form>

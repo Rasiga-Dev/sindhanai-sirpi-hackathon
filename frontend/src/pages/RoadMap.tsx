@@ -18,9 +18,6 @@ export function RoadMap() {
         </div>
       </div>
 
-
-
-
       {/* Our Journey Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center font-sans max-w-7xl mx-auto px-4 py-10">
         {/* Left Column: 6 columns */}
@@ -46,27 +43,6 @@ export function RoadMap() {
         </div>
       </div>
 
-
-
-
-      {/* Milestones Section */}
-      {/* <div className="bg-red-50 py-12 px-6 md:px-12 rounded-xl shadow-md space-y-10">
-        <h2 className="text-center text-2xl md:text-3xl font-bold text-red-800">Milestones to Achieve</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-xl shadow text-center hover:shadow-md transition">
-            <h3 className="text-xl font-semibold text-red-700 mb-2">📌 1000+ Participants</h3>
-            <p className="text-gray-600 text-sm">From across the nation, ready to innovate and collaborate.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow text-center hover:shadow-md transition">
-            <h3 className="text-xl font-semibold text-red-700 mb-2">🚀 100+ Projects</h3>
-            <p className="text-gray-600 text-sm">Ground-breaking solutions solving real-world challenges.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow text-center hover:shadow-md transition">
-            <h3 className="text-xl font-semibold text-red-700 mb-2">🏆 Top 10 Finalists</h3>
-            <p className="text-gray-600 text-sm">Recognized for innovation, execution, and impact.</p>
-          </div>
-        </div>
-      </div> */}
 
       {/* Final Image Banner */}
       <div className="w-full">

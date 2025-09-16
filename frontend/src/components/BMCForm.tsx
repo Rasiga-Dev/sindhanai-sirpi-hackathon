@@ -61,16 +61,6 @@ const BMCForm: React.FC<BMCFormProps> = ({ onNext, onBack, initialData }) => {
       </h2>
 
       <div className="mb-8">
-        {/* <iframe
-          width="100%"
-          height="400"
-          src="https://www.youtube.com/embed/-T_qWzFjnMI?si=aSjy7x1A5dtgdNTp"
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="rounded shadow-md"
-        ></iframe> */}
         <iframe width="850" height="335" src="https://www.youtube.com/embed/Yoyda1t7nT0?si=RIrwxhHSwY82sNZ4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
 

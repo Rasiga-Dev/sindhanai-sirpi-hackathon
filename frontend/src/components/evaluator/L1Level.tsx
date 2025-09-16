@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BMCLayout from '../BMCLayout';
+import { API_BASE } from '../../config/api';
 
 
 export default function L1Level({ projects, onStatusChange, username, refreshL2List, refreshProjects, refreshLevel1List }) {
@@ -29,7 +30,7 @@ export default function L1Level({ projects, onStatusChange, username, refreshL2L
         setIsLoading(true);
         try {
             const token = localStorage.getItem('evaluatorToken');
-            const response = await axios.get('http://localhost:11129/api/evaluator/level-1-summary', {
+            const response = await axios.get(`${API_BASE}/api/evaluator/level-1-summary`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSummary(response.data);
@@ -67,17 +68,13 @@ export default function L1Level({ projects, onStatusChange, username, refreshL2L
                 evaluatedBy: username,
             };
 
-            await axios.post('http://localhost:11129/api/evaluator/evaluate-project', payload);
+            await axios.post(`${API_BASE}/api/evaluator/evaluate-project`, payload);
             alert('Project evaluated successfully!');
 
             // Remove project locally to hide it immediately:
             setProjectList(prev => prev.filter(p => p.projectId !== project.projectId));
 
-            // Optionally also refresh projects from server:
-            // if (refreshProjects) {
-            //     refreshProjects();
-            // }
-
+           
             refreshProjects(); // if needed
             refreshLevel1List(); // 👈 this ensures L1 Level List updates
             refreshL2List(); // 👈 this ensures L2 Level List updates
@@ -91,7 +88,7 @@ export default function L1Level({ projects, onStatusChange, username, refreshL2L
         try {
             const token = localStorage.getItem('evaluatorToken');
 
-            await axios.post('http://localhost:11129/api/evaluator/skip-project', {
+            await axios.post(`${API_BASE}/api/evaluator/skip-project`, {
                 projectId: project.projectId,
                 evaluatorId: username // or pass evaluator _id if needed
             }, {
@@ -146,99 +143,7 @@ export default function L1Level({ projects, onStatusChange, username, refreshL2L
             ) : projects.length === 0 ? (
                 <p>No projects found.</p>
             ) : (
-                // <div className="overflow-x-auto max-h-[500px] overflow-y-auto border rounded">
-                //     <table className="w-full table-auto border border-gray-300">
-                //         <thead>
-                //             <tr className="bg-gray-200">
-                //                 <th className="p-2 border">#</th>
-                //                 <th className="p-2 border">School ID</th>
-                //                 <th className="p-2 border">Project ID</th>
-                //                 <th className="p-2 border">Project Title</th>
-                //                 <th className="p-2 border">Project Description</th>
-                //                 <th className="p-2 border">Project Statement</th>
-                //                 <th className="p-2 border">Solution</th>
-                //                 <th className="p-2 border">BMC Details</th>
-                //                 <th className="p-2 border">Status</th>
-                //                 <th className="p-2 border">Status Reason</th>
-                //                 <th className="p-2 border">Actions</th>
-                //             </tr>
-                //         </thead>
-                //         <tbody>
-                //             {projectList.map((project, index) => (
-
-                //                 <tr key={project.projectId} className="text-center align-top">
-                //                     <td className="p-2 border">{index + 1}</td>
-                //                     <td className="p-2 border break-words">{project.schoolId}</td>
-                //                     <td className="p-2 border break-words">{project.projectId}</td>
-                //                     <td className="p-2 border break-words">{project.projectTitle}</td>
-                //                     <td className="p-2 border break-words">{project.projectDescription}</td>
-                //                     <td className="p-2 border break-words">{project.problemStatement}</td>
-                //                     <td className="p-2 border break-words">{project.solution}</td>
-                //                     <td className="p-2 border">
-                //                         <button
-                //                             onClick={() => openModal(project)}
-                //                             className="text-blue-600 underline hover:text-blue-800"
-                //                         >
-                //                             View BMC
-                //                         </button>
-                //                     </td>
-                //                     <td className="p-2 border">
-                //                         <select
-                //                             value={project.status || ''}
-                //                             onChange={(e) => {
-                //                                 const updated = [...projectList];
-                //                                 updated[index].status = e.target.value;
-                //                                 setProjectList(updated);
-                //                             }}
-
-                //                             className="border px-2 py-1 rounded"
-                //                         >
-                //                             <option value="">Select</option>
-                //                             <option value="accept">Accept</option>
-                //                             <option value="reject">Reject</option>
-                //                         </select>
-                //                     </td>
-
-
-                //                     {/* ✅ New Column: Status Reason Textarea */}
-                //                     <td className="p-2 border">
-                //                         <textarea
-                //                             rows="2"
-                //                             className="w-48 h-25 border rounded px-2 py-1"
-                //                             placeholder="Enter reason"
-                //                             value={project.reason || ''}
-                //                             onChange={(e) => {
-                //                                 const updated = [...projectList];
-                //                                 updated[index].reason = e.target.value;
-                //                                 setProjectList(updated);
-                //                             }}
-
-                //                         />
-                //                     </td>
-
-                //                     <td className="p-2 border">
-                //                         <button
-                //                             className="bg-green-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                //                             onClick={() => handleEvaluate(project)}
-
-                //                         >
-                //                             Evaluate
-                //                         </button>
-                //                         {/* <button
-                //                             className="mt-3 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                //                             onClick={() => handleSkip(projectList[index])}
-                //                         >
-                //                             Skip
-                //                         </button> */}
-
-
-                //                     </td>
-                //                 </tr>
-                //             ))}
-                //         </tbody>
-
-                //     </table>
-                // </div>
+               
                 <div className="grid gap-4 max-h-[500px] overflow-y-auto p-4">
                     {projectList.map((project, index) => (
                         <div

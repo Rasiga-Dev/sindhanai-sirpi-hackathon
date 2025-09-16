@@ -5,6 +5,7 @@ import { User, Lock, Loader, AlertCircle } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { API_BASE } from '../config/api';
 
 export default function EvaluatorLogin() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function EvaluatorLogin() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:11129/api/evaluator/login', credentials);
+      const response = await axios.post(`${API_BASE}/api/evaluator/login`, credentials);
       const evaluator = response.data.evaluator;
 
       localStorage.setItem('evaluatorToken', response.data.token);
@@ -124,9 +125,6 @@ export default function EvaluatorLogin() {
                 />
               </div>
             </div>
-
-
-
 
             <div>
               <button

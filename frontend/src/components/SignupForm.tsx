@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaSignInAlt } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE } from '../config/api';
 
 interface FormData {
   udiseCode: string;
@@ -45,7 +46,7 @@ const SignupForm: React.FC = () => {
     // Trigger API only when exactly 11 digits
     if (code.length === 11) {
       try {
-        const res = await axios.get(`http://localhost:11129/api/schools/udise/${code}`);
+        const res = await axios.get(`${API_BASE}/api/schools/udise/${code}`);
         const { School_Name, Email_ID, District } = res.data;
         setFormData((prev) => ({
           ...prev,
@@ -99,7 +100,7 @@ const SignupForm: React.FC = () => {
 
     if (!passwordError && !confirmError) {
       try {
-        const res = await axios.post('http://localhost:11129/api/schools/register', {
+        const res = await axios.post(`${API_BASE}/api/schools/register`, {
           udiseCode: formData.udiseCode,
           password: formData.password,
           hmName: formData.hmName,
