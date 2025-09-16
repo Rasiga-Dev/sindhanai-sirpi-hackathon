@@ -26,6 +26,8 @@ export function SchoolLogin() {
         udiseCode,
         password,
       });
+      console.log("API URL:", import.meta.env.VITE_API_BASE);
+
 
       // Check if the response contains the expected data
       if (res.data?.token && res.data?.school) {
