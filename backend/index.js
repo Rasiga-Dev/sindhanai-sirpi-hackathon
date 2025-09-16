@@ -27,8 +27,7 @@ const __dirname = path.dirname(__filename);
 // Initialize the app
 const app = express();
 
-// Middleware
-app.use(cors());
+
 app.use(express.json());
 
 // Serve static files from "public" folder
@@ -82,6 +81,16 @@ app.get('/api/download/template', (req, res) => {
     }
   });
 });
+
+
+// CORS Setup
+app.use(
+  cors({
+    origin: "https://sindhanai-sirpi-hackathon-2025.vercel.app", // unga Vercel frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Start the server
 const PORT = process.env.PORT || 11129;
