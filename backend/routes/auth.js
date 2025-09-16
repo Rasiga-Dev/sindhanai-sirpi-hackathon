@@ -1,6 +1,7 @@
 import express from 'express';
 import School from '../models/School.js';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcryptjs";
+
 
 const router = express.Router();
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import School from '../models/School.js';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcryptjs";
+
 import multer from 'multer'; // For handling file uploads
 import jwt from 'jsonwebtoken';
 import Draft from '../models/Draft.js';
