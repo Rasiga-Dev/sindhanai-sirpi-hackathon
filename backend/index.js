@@ -27,10 +27,6 @@ const __dirname = path.dirname(__filename);
 // Initialize the app
 const app = express();
 
-
-app.use(express.json());
-
-
 // CORS Setup
 app.use(
   cors({
@@ -39,6 +35,10 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
+
+
+
 
 // Serve static files from "public" folder
 app.use('/public', express.static(path.join(__dirname, '../public')));
