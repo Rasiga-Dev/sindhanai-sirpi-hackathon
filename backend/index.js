@@ -30,20 +30,11 @@ const app = express();
 
 app.use(express.json());
 
-const allowedOrigins = [
-  "https://sindhanai-sirpi-hackathon-2025.vercel.app",
-  "https://sindhanai-sirpi-hackathon-6mvr.vercel.app",
-];
+
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "https://sindhanai-sirpi-hackathon-pcu1.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
