@@ -30,14 +30,25 @@ const app = express();
 
 app.use(express.json());
 
-// CORS Setup
+const allowedOrigins = [
+  "https://sindhanai-sirpi-hackathon-2025.vercel.app",
+  "https://sindhanai-sirpi-hackathon-6mvr.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "https://sindhanai-sirpi-hackathon-2025.vercel.app", // unga Vercel frontend URL
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
 
 
 // Serve static files from "public" folder
