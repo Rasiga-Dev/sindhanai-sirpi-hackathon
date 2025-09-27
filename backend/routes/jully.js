@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const JullyPDF = require('../models/JullyPDF');
+import multer from 'multer';
+import path from 'path';
+import JullyPDF from '../models/JullyPDF.js';
 
 // Set up Multer storage
 const storage = multer.diskStorage({
@@ -63,4 +63,4 @@ router.get('/latest', async (req, res) => {
 
 
 
-module.exports = router;
+export default router;

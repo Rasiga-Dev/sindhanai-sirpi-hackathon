@@ -5,4 +5,6 @@ const DPM = new mongoose.Schema({
   password: String, // hashed preferred
   district: String, // Tenkasi, Tirunelveli, etc.
 });
-module.exports = mongoose.model('dpm', DPM);
+
+const dpm =mongoose.model('dpm', DPM);
+export default dpm;
