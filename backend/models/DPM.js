@@ -1,5 +1,5 @@
 // models/DPM.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const DPM = new mongoose.Schema({
   username: String,
   password: String, // hashed preferred
