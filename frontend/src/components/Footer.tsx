@@ -22,22 +22,29 @@ export function Footer() {
 
   const footerLinks = {
     company: [
+      { name: 'Home', href: '/' },
       { name: 'About Us', href: '/about' },
+      { name: 'Schedule', href: '/schedule' },
       { name: 'Road Map', href: '/roadmap' },
-      { name: 'FAQs', href: '/faq' },
-      { name: 'Blog', href: '/blog' },
+     
+     
     ],
     resources: [
-      { name: 'Schedule', href: '/schedule' },
-      { name: 'Guidelines', href: '/guidelines' },
+       { name: 'Guidelines', href: '/guidelines' },
       { name: 'Gallery', href: '/gallery' },
-      { name: 'Speakers', href: '/speakers' },
+      { name: 'Winners', href: '/speakers' },
+      { name: 'Contact', href: '/contact' },
     ],
     legal: [
-      { name: 'Privacy Policy', href: '/privacy-policy' },
-      { name: 'Terms of Service', href: '/terms-of-service' },
-      { name: 'Code of Conduct', href: '/code-of-conduct' },
-      { name: 'Cookie Policy', href: '/cookie-policy' },
+      // { name: 'Privacy Policy', href: '/privacy-policy' },
+      // { name: 'Terms of Service', href: '/terms-of-service' },
+      // { name: 'Code of Conduct', href: '/code-of-conduct' },
+      // { name: 'Cookie Policy', href: '/cookie-policy' },
+       { name: 'Privacy Policy', href: '/privacy-policy' },
+      { name: 'Shipping Policy', href: '/shipping-policy' },
+      { name: 'ContactUs Page', href: '/contactus-page' },
+      { name: 'Cancellation And Refunds', href: '/cancellation-refunds' },
+      { name: 'Terms And Conditions', href: '/terms-conditions' },
     ],
   };
 

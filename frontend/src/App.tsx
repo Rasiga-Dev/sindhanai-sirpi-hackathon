@@ -42,6 +42,10 @@ import EvaluationRequest from './components/admin/EvaluationRequest';
 import AverageProjectsList from './components/evaluator/AverageProjectsList';
 import DPMLogin from './components/dpm/DPMLogin';
 import DPMPannel from './components/dpm/DPMPannel';
+import { ShippingPolicy } from './pages/ShippingPolicy';
+import { ContactUsPage } from './pages/ContactUsPage';
+import { CancellationAndRefunds } from './pages/CancellationAndRefunds';
+import { TermsAndConditions } from './pages/TermsAndConditions';
 
 
 function AppWrapper() {
@@ -168,7 +172,13 @@ function AppWrapper() {
           <Route path="/average-projects" element={<AverageProjectsList />} />
           <Route path="/dpm-login" element={<DPMLogin />} />
           <Route path="/dpm-dashboard" element={<DPMPannel />} />
-
+          <Route path="/dpm-dashboard" element={<DPMPannel />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/shipping-policy" element={<ShippingPolicy />} />
+          <Route path="/contactus-page" element={<ContactUsPage />} />
+          <Route path="/cancellation-refunds" element={<CancellationAndRefunds />} />
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
+        
 
          
         </Routes>
