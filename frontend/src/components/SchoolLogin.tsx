@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import VITE_BASE_URL from '../config/api';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
 export function SchoolLogin() {
@@ -16,7 +17,7 @@ export function SchoolLogin() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const successMessage = location.state?.message;
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +36,7 @@ export function SchoolLogin() {
 
         // Store school details in localStorage (Optional)
         localStorage.setItem('schoolDetails', JSON.stringify(res.data.school));
-      
+
         localStorage.setItem("udiseCode", res.data.school.udiseCode); // 👈 Save to localStorage
 
 
@@ -118,18 +119,29 @@ export function SchoolLogin() {
               <label className="block text-sm font-medium text-gray-700">
                 Password
               </label>
+
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  name="fake-password" // important
+                  name="fake-password" // important — keep it
                   autoComplete="new-password"
                   placeholder="Enter your password"
-                  className="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-800 focus:border-red-800"
+                  className="pl-10 pr-12 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-800 focus:border-red-800"
                   required
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10 text-gray-600 focus:outline-none"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               </div>
             </div>
 
@@ -188,7 +200,7 @@ export function SchoolLogin() {
         </div>
       </div>
 
-      <ToastContainer position="top-right" autoClose={3000}/>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
