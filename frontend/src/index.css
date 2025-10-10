@@ -103,3 +103,19 @@ html {
 .Toastify__toast-container {
   z-index: 9999 !important;
 }
+
+
+/* Hide Edge / IE reveal & clear buttons */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Hide WebKit (Chrome/Safari) password reveal & clear buttons */
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-webkit-password-reveal-button,
+input[type="password"]::-webkit-clear-button {
+  display: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
