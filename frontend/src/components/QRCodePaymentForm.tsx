@@ -76,7 +76,7 @@ const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ onNext, onBack })
         </div>
       </div>
 
-      {/* Instructions & Button */}
+      {/* Instructions & Button
       <div className="space-y-4">
         <div className="bg-green-50 p-4 rounded-lg">
           <h4 className="font-medium text-green-800 flex items-center gap-2">
@@ -92,7 +92,7 @@ const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ onNext, onBack })
         </div>
 
       
-      </div>
+      </div> */}
 
       <div className="flex justify-between mt-4">
           <button
