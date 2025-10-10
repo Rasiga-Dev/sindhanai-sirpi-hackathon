@@ -36,7 +36,7 @@
 //   const [passwordError, setPasswordError] = useState('');
 //   const [confirmError, setConfirmError] = useState('');
 
-  
+
 
 //   const handleUDISEChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 //     const code = e.target.value;
@@ -427,7 +427,7 @@ const SignupForm: React.FC = () => {
     if (!/^\d{11}$/.test(udise)) return false;
 
     // HM name: letters & spaces, 2-50 chars
-    if (!/^[A-Za-z\s]{2,50}$/.test(hmName)) return false;
+    if (!/^[A-Za-z\s]{3,50}$/.test(hmName)) return false;
 
     // HM email: basic email regex
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hmEmail)) return false;
@@ -678,48 +678,54 @@ const SignupForm: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Password <span className="text-red-500">*</span>
               </label>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={handlePasswordChange}
-                className="w-full border rounded-lg px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-red-800"
-                placeholder="Enter strong password"
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((p) => !p)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10 text-gray-600 focus:outline-none"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <FaEyeSlash className='mt-4'/> : <FaEye className='mt-4'/>}
-              </button>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={handlePasswordChange}
+                  className="w-full border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-red-800"
+                  placeholder="Enter strong password"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 focus:outline-none"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
+                </button>
+              </div>
               {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
             </div>
 
-            {/* Confirm Field (same idea) */}
-            <div className="relative">
+            {/* Confirm Password Field */}
+            <div className="relative mt-4">
               <label className="block text-sm font-medium text-gray-700">
                 Confirm Password <span className="text-red-500">*</span>
               </label>
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={formData.confirmPassword}
-                onChange={handleConfirmChange}
-                className="w-full border rounded-lg px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-red-800"
-                placeholder="Re-enter password"
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword((p) => !p)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10 text-gray-600 focus:outline-none"
-                aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-              >
-                {showConfirmPassword ? <FaEyeSlash className='mt-4' /> : <FaEye className='mt-4'/>}
-              </button>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={handleConfirmChange}
+                  className="w-full border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-red-800"
+                  placeholder="Re-enter password"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 focus:outline-none"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  {showConfirmPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
+                </button>
+              </div>
               {confirmError && <p className="text-red-600 text-sm mt-1">{confirmError}</p>}
             </div>
+
+
 
             <button
               type="submit"
