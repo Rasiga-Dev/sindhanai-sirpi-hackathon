@@ -6,8 +6,10 @@ import { FaLightbulb, FaLaptopCode, FaAward, FaUserFriends } from 'react-icons/f
 import { useKeenSlider } from 'keen-slider/react';
 import 'keen-slider/keen-slider.min.css';
 import { Lightbulb, Award, Users, BookOpen, Rocket } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
+  const navigate = useNavigate();
   const [sliderRef, slider] = useKeenSlider<HTMLDivElement>({
     loop: true,
     mode: 'snap',
@@ -17,7 +19,9 @@ export function Home() {
     },
   });
 
-
+const handleJoinClick = () => {
+    navigate("/signup"); // ✅ Redirects to signup page
+  };
   const features = [
     {
       icon: <Lightbulb className="text-white w-8 h-8" />,
@@ -146,7 +150,7 @@ export function Home() {
             transition={{ delay: 0.6, duration: 1 }}
           >
             The ultimate celebration of school innovation. <br />
-            Build. Showcase. Inspire. Win. 🌟
+            Build. Showcase. Inspire. Win.
           </motion.p>
 
           {/* Images */}
@@ -173,9 +177,12 @@ export function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.8 }}
           >
-            <button className="bg-gradient-to-r from-yellow-300 to-pink-400 text-black font-extrabold py-3 px-8 rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300">
-              🔥 Join Now
-            </button>
+             <button
+      onClick={handleJoinClick}
+      className="bg-gradient-to-r from-yellow-300 to-pink-400 text-black font-extrabold py-3 px-8 rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300"
+    >
+      Join Now
+    </button>
           </motion.div>
         </div>
 
