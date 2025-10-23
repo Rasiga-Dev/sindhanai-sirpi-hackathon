@@ -24,6 +24,9 @@ interface Finalist {
 }
 
 const FinalistManagement = () => {
+    // At the top of FinalistManagement.tsx, just below imports
+console.log("VITE_BASE_URL from config:", VITE_BASE_URL);
+
     const [finalists, setFinalists] = useState<Finalist[]>([]);
     const [loading, setLoading] = useState(true);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
