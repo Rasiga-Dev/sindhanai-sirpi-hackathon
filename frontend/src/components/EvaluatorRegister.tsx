@@ -315,6 +315,7 @@ export default function EvaluatorRegister() {
       {/* Right Column - Form */}
       <div className="flex items-center justify-center px-6 py-12 bg-gray-50">
         <div className="w-full max-w-xl bg-white p-10 rounded-xl shadow-lg">
+          
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Evaluator Registration</h2>
 
           {/* {error && (

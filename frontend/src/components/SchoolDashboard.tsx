@@ -64,6 +64,8 @@ export default function SchoolDashboard() {
   const [schoolDetails, setSchoolDetails] = useState<SchoolDetails | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [activeTab, setActiveTab] = useState('guide');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
@@ -105,6 +107,24 @@ export default function SchoolDashboard() {
     fetchDashboardData();
   }, [navigate]);
 
+
+  const openModal = (submission) => {
+    setSelectedSubmission(submission);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setSelectedSubmission(null);
+    setShowModal(false);
+  };
+
+  const steps = [
+    { level: 1, label: "Level 1" },
+    { level: 2, label: "Level 2" },
+    { level: 3, label: "Level 3" },
+    { level: 4, label: "Level 4" },
+    { level: 5, label: "Final" },
+  ];
 
   const handleDownloadPDF = (student, schoolName) => {
     const container = document.createElement('div');
@@ -313,6 +333,13 @@ export default function SchoolDashboard() {
                     Idea Submission
                   </button>
                  
+                   <button
+                    onClick={() => setActiveTab('submitted-idea')}
+                    className={`px-4 py-2 font-medium ${activeTab === 'submitted-idea' ? 'border-b-4 border-red-800 text-red-800' : 'text-gray-600'}`}
+                  >
+                    Submitted Ideas
+                  </button>
+
                   <button
                     onClick={() => setActiveTab('documentation')}
                     className={`px-4 py-2 font-medium ${activeTab === 'documentation' ? 'border-b-4 border-red-800 text-red-800' : 'text-gray-600'}`}
@@ -346,7 +373,181 @@ export default function SchoolDashboard() {
                   {activeTab === 'guide' && <RegisterGuideTeacher />}
                   {activeTab === 'idea' && <IdeaSubmissionForm />}
                  
+                    {activeTab === "submitted-idea" && (
+                    <div>
+                      {!dashboardData?.submissions || dashboardData.submissions.length === 0 ? (
+                        <div className="text-gray-800">No submitted ideas found.</div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                            <thead className="bg-red-800 text-white">
+                              <tr>
+                                <th className="px-4 py-2 border text-left">S.No</th>
+                                <th className="px-4 py-2 border text-left">Project Title</th>
+                                <th className="px-4 py-2 border text-left">Description</th>
+                                <th className="px-4 py-2 border text-left">Team Size</th>
+                                <th className="px-4 py-2 border text-left">Problem</th>
+                                <th className="px-4 py-2 border text-left">Solution</th>
+                                <th className="px-4 py-2 border text-left">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                              {dashboardData.submissions.map((submission, index) => (
+                                <tr key={submission._id?.$oid || submission._id} className="hover:bg-gray-100">
+                                  <td className="px-4 py-2 border">{index + 1}</td>
+                                  <td className="px-4 py-2 border">{submission.projectDetails?.title || "N/A"}</td>
+                                  <td className="px-4 py-2 border">{submission.projectDetails?.description || "N/A"}</td>
+                                  <td className="px-4 py-2 border">{submission.projectDetails?.teamSize || "-"}</td>
+                                  <td className="px-4 py-2 border">{submission.projectDetails?.problemStatement || "N/A"}</td>
+                                  <td className="px-4 py-2 border">{submission.projectDetails?.solution || "N/A"}</td>
+                                  <td className="px-4 py-2 border">
+                                    <button
+                                      onClick={() => openModal(submission)}
+                                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                    >
+                                      View Status
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
 
+                      {showModal && selectedSubmission && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 p-4 mt-20">
+                          <div className="bg-white w-full max-w-3xl rounded-lg shadow-lg p-6 relative">
+                            <button onClick={closeModal} className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+
+                            <h2 className="text-xl font-semibold text-center mb-2 text-red-800">Project Status</h2>
+                            <p className="text-center mb-4 font-medium text-gray-800">{selectedSubmission.projectDetails?.title}</p>
+
+                            {(() => {
+                              const statuses = selectedSubmission.levelStatuses || {
+                                level1: "pending",
+                                level2: "pending",
+                                level3: "pending",
+                                level4: "pending",
+                                level5: "pending",
+                              };
+
+                              // helper: create friendly message for each level
+                              function getLevelMessage(level, status, submission) {
+                                const s = submission || {};
+                                const evalStatus = s.evaluationStatus || "-";
+                                const evalScoreStatus = s.evaluationScoreStatus || "-";
+                                const avgFilter = s.averageFilter || "-";
+                                const jullyAvg = s.jullyMarks && typeof s.jullyMarks.average !== "undefined" ? s.jullyMarks.average : null;
+                                const finalStage = s.finalStage || "-";
+                                const finalStatus = s.finalStatus || "-";
+
+                                if (level === 1) {
+                                  if (status === "accepted")
+                                    return `Level 1 — Project Accepted by Evaluator. The project successfully passed the initial screening.`;
+                                  if (status === "rejected")
+                                    return `Level 1 — Project Rejected by Evaluator. The project did not pass the first-level evaluation.`;
+                                  return `Level 1 — Waiting for evaluator to review and provide decision.`;
+                                }
+
+                                if (level === 2) {
+                                  if (status === "completed")
+                                    return `Level 2 — Evaluator scoring completed. The marks have been recorded successfully.`;
+                                  return `Level 2 — Evaluation scores are yet to be entered by the evaluator.`;
+                                }
+
+                                if (level === 3) {
+                                  if (status === "completed")
+                                    return `Level 3 — Average filter applied. The project cleared the average marks requirement.`;
+                                  return `Level 3 — Average filter process is pending.`;
+                                }
+
+                                if (level === 4) {
+                                  if (status === "completed" && jullyAvg !== null)
+                                    return `Level 4 — Jury evaluation completed.`;
+                                  return `Level 4 — Awaiting jury evaluation or marks entry.`;
+                                }
+
+                                if (level === 5) {
+                                  if (status === "winner")
+                                    return `Level 5 — Final Result Declared: ${finalStage}. Congratulations to the team!`;
+                                  return `Level 5 — Final round results are yet to be announced.`;
+                                }
+
+                                return "";
+                              }
+
+
+
+                              return (
+                                <div className="space-y-6">
+                                  {/* Stepper */}
+                                  <div className="flex items-center gap-4">
+                                    {steps.map((step, idx) => {
+                                      const st = statuses[`level${step.level}`];
+                                      const cls = statusToClasses(st); // circle, labelColor, chip, smallText
+                                      const connectorActive = st === "accepted" || st === "completed" || st === "winner";
+
+                                      return (
+                                        <div key={step.level} className="flex-1 flex flex-col items-center relative">
+                                          <div className={`w-12 h-12 flex items-center justify-center rounded-full border-2 ${cls.circle}`}>
+                                            <span className="font-semibold">{step.level}</span>
+                                          </div>
+
+                                          <div className={`text-sm mt-2 text-center ${cls.labelColor}`}>{step.label}</div>
+
+                                          <div className="mt-1 text-xs text-center">
+                                            <span className={`px-2 py-0.5 rounded-full text-xs ${cls.chip}`}>{cls.smallText}</span>
+                                          </div>
+
+                                          {idx < steps.length - 1 && (
+                                            <div className={`absolute top-6 right-[-50%] w-[100%] h-1 ${connectorActive ? "bg-green-400" : "bg-gray-300"}`} style={{ zIndex: 0 }} />
+                                          )}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+
+                                  {/* Friendly messages area */}
+                                  <div className="bg-gray-50 border rounded p-4">
+                                    <h3 className="text-sm font-medium mb-2">Progress updates</h3>
+
+                                    <ul className="space-y-3">
+                                      {steps.map((step) => {
+                                        const st = statuses[`level${step.level}`];
+                                        const message = getLevelMessage(step.level, st, selectedSubmission);
+                                        // choose icon based on status
+                                        const icon = st === "accepted" || st === "completed" || st === "winner"
+                                          ? "✔️"
+                                          : st === "rejected"
+                                            ? "✖️"
+                                            : "⏳";
+
+                                        return (
+                                          <li key={step.level} className="flex items-start gap-3">
+                                            <div className="mt-1 text-xl">{icon}</div>
+                                            <div>
+                                              <div className="text-sm font-semibold">{`Step ${step.level}: ${step.label}`}</div>
+                                              <div className="text-sm text-gray-700">{message}</div>
+                                            </div>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+
+                                  {/* Action / Close */}
+                                  <div className="text-right">
+                                    <button onClick={closeModal} className="px-4 py-2 bg-red-800 text-white rounded hover:bg-red-700">Close</button>
+                                  </div>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {activeTab === 'documentation' && (
                     <div className="text-gray-700">
                       {dashboardData?.hasFilteredAverage ? (
@@ -460,4 +661,21 @@ export default function SchoolDashboard() {
       </div>
     </div>
   );
+}
+
+
+// map server status to classes + label
+// statusToClasses helper (ensure it's in component)
+function statusToClasses(status) {
+  if (!status) status = "pending";
+  if (status === "accepted" || status === "completed" || status === "winner") {
+    return { circle: "bg-green-600 border-green-600 text-white", labelColor: "text-green-600", chip: "bg-green-100 text-green-800", smallText: status === "winner" ? "Winner" : "Completed" };
+  }
+  if (status === "rejected") {
+    return { circle: "bg-red-600 border-red-600 text-white", labelColor: "text-red-600", chip: "bg-red-100 text-red-800", smallText: "Rejected" };
+  }
+  if (status === "in-progress" || status === "evaluating") {
+    return { circle: "bg-yellow-500 border-yellow-500 text-white", labelColor: "text-yellow-600", chip: "bg-yellow-100 text-yellow-800", smallText: "In Progress" };
+  }
+  return { circle: "bg-white border-gray-300 text-gray-500", labelColor: "text-gray-500", chip: "bg-gray-100 text-gray-700", smallText: "Pending" };
 }
