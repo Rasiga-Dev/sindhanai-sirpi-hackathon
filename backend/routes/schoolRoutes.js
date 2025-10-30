@@ -328,29 +328,117 @@ router.get('/project/:projectId', async (req, res) => {
 
 // get school particular
 
-router.get('/dashboard', authenticateToken, async (req, res) => {
+
+
+// Helper: compute level statuses from a submission object
+// normalize helper
+// Helper to normalize string safely
+function normalizeStr(v) {
+  if (v === undefined || v === null) return null;
+  return String(v).trim();
+}
+
+function computeLevelStatuses(sub) {
+  const s = sub || {};
+
+  // Level 1: evaluationStatus === "accept" (case-insensitive) -> accepted
+  const evalStatusRaw = normalizeStr(s.evaluationStatus);
+  const level1 =
+    evalStatusRaw && evalStatusRaw.toLowerCase() === "accept"
+      ? "accepted"
+      : evalStatusRaw && evalStatusRaw.toLowerCase().includes("reject")
+      ? "rejected"
+      : "pending";
+
+  // Level 2: evaluationScoreStatus === "Evaluated" (exact or case-insensitive)
+  const evalScoreStatusRaw = normalizeStr(s.evaluationScoreStatus);
+  const level2 =
+    evalScoreStatusRaw && evalScoreStatusRaw.toLowerCase() === "evaluated"
+      ? "completed"
+      : "pending";
+
+  // Level 3: averageFilter === "filtered"
+  const avgFilterRaw = normalizeStr(s.averageFilter);
+  const level3 = avgFilterRaw && avgFilterRaw.toLowerCase() === "filtered" ? "completed" : "pending";
+
+  // Level 4: jullyMarks.average exists and is a valid number => completed
+  // (This follows your latest instruction: presence of average mark => Level 4 completed)
+  let jullyAvg = null;
+  if (s.jullyMarks && typeof s.jullyMarks.average !== "undefined" && s.jullyMarks.average !== null) {
+    const num = Number(s.jullyMarks.average);
+    if (!Number.isNaN(num)) jullyAvg = num;
+  }
+  const level4 = jullyAvg !== null ? "completed" : "pending";
+
+  // Level 5: finalStage === "Completed" && finalStatus === "Finalist" => winner
+  const finalStageRaw = normalizeStr(s.finalStage);
+  const finalStatusRaw = normalizeStr(s.finalStatus);
+  const level5 =
+    finalStageRaw && finalStageRaw === "Completed" && finalStatusRaw && finalStatusRaw === "Finalist"
+      ? "winner"
+      : "pending";
+
+  return {
+    level1, // 'accepted' | 'rejected' | 'pending'
+    level2, // 'completed' | 'pending'
+    level3, // 'completed' | 'pending'
+    level4, // 'completed' | 'pending'
+    level5, // 'winner' | 'pending'
+  };
+}
+
+
+router.get("/dashboard", authenticateToken, async (req, res) => {
   try {
-    const school = await School.findById(req.user.schoolId);
+    const school = await School.findById(req.user.schoolId).lean(); // .lean() for plain object
     if (!school) {
-      return res.status(404).json({ message: 'School not found' });
+      return res.status(404).json({ message: "School not found" });
     }
 
     // Calculate dashboard metrics
-    const totalProjects = school.submissions?.length || 0;
-    const guideTeachers = school.guideTeachers?.length || 0;
+    const totalProjects = Array.isArray(school.submissions) ? school.submissions.length : 0;
+    const guideTeachers = Array.isArray(school.guideTeachers) ? school.guideTeachers.length : 0;
 
     // Calculate total students from all submissions
-    const studentsCount = school.submissions?.reduce((total, submission) => {
-      return total + (submission.studentDetails?.length || 0);
-    }, 0) || 0;
+    const studentsCount =
+      (Array.isArray(school.submissions) &&
+        school.submissions.reduce((total, submission) => {
+          return total + (submission.studentDetails?.length || 0);
+        }, 0)) ||
+      0;
 
-    const hasFilteredAverage = school.submissions?.some(
-      (sub) => sub.averageFilter === 'filtered'
-    ) || false;
+    const hasFilteredAverage = Array.isArray(school.submissions)
+      ? school.submissions.some((sub) => sub.averageFilter === "filtered")
+      : false;
 
-   
+    // Map submissions and include computed level statuses (and keep raw fields frontend may need)
+    const submissions = Array.isArray(school.submissions)
+      ? school.submissions.map((sub) => {
+          const levelStatuses = computeLevelStatuses(sub);
 
-    // ✅ Send full submissions array also
+          return {
+            _id: sub._id,
+            transactionId: sub.transactionId,
+            paymentStatus: sub.paymentStatus,
+            paymentAmount: sub.paymentAmount,
+            submittedAt: sub.submittedAt,
+            evaluationStatus: sub.evaluationStatus, // raw
+            evaluatorScores: sub.evaluatorScores || [], // raw scores
+            jullyMarks: sub.jullyMarks || sub.juryMarks || null, // raw jury marks (keep as-is)
+            transactionStatus: sub.transactionStatus || null,
+            projectDetails: sub.projectDetails || {},
+            studentDetails: sub.studentDetails || [],
+            finalStage: sub.finalStage || null,
+            rank: sub.rank || null,
+            averageFilter: sub.averageFilter || null,
+            // computed convenience field for front-end
+            levelStatuses,
+            schoolName: school.School_Name,
+          };
+        })
+      : [];
+
+    // projectId: probably you meant school._id (or you want submission ids separately)
     res.status(200).json({
       totalProjects,
       guideTeachers,
@@ -358,24 +446,62 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
       studentsCount,
       hasFilteredAverage,
       schoolName: school.School_Name,
-      // submissions: school.submissions, // ✅ Add this line
-      projectId: school.submissions._id, // Include school ID for reference
-      submissions: school.submissions.map((sub) => ({
-        _id: sub._id,
-        projectDetails: sub.projectDetails,
-        studentDetails: sub.studentDetails,
-        finalStage: sub.finalStage,
-        rank: sub.rank,
-        averageFilter: sub.averageFilter,
-        schoolName: school.School_Name,
-      }))
-      
+      projectId: school._id, // school id reference
+      submissions,
     });
   } catch (err) {
-    console.error('Error fetching dashboard data:', err);
-    res.status(500).json({ message: 'Error fetching dashboard data' });
+    console.error("Error fetching dashboard data:", err);
+    res.status(500).json({ message: "Error fetching dashboard data" });
   }
 });
+// router.get('/dashboard', authenticateToken, async (req, res) => {
+//   try {
+//     const school = await School.findById(req.user.schoolId);
+//     if (!school) {
+//       return res.status(404).json({ message: 'School not found' });
+//     }
+
+//     // Calculate dashboard metrics
+//     const totalProjects = school.submissions?.length || 0;
+//     const guideTeachers = school.guideTeachers?.length || 0;
+
+//     // Calculate total students from all submissions
+//     const studentsCount = school.submissions?.reduce((total, submission) => {
+//       return total + (submission.studentDetails?.length || 0);
+//     }, 0) || 0;
+
+//     const hasFilteredAverage = school.submissions?.some(
+//       (sub) => sub.averageFilter === 'filtered'
+//     ) || false;
+
+   
+
+//     // ✅ Send full submissions array also
+//     res.status(200).json({
+//       totalProjects,
+//       guideTeachers,
+//       submittedIdeas: totalProjects,
+//       studentsCount,
+//       hasFilteredAverage,
+//       schoolName: school.School_Name,
+//       // submissions: school.submissions, // ✅ Add this line
+//       projectId: school.submissions._id, // Include school ID for reference
+//       submissions: school.submissions.map((sub) => ({
+//         _id: sub._id,
+//         projectDetails: sub.projectDetails,
+//         studentDetails: sub.studentDetails,
+//         finalStage: sub.finalStage,
+//         rank: sub.rank,
+//         averageFilter: sub.averageFilter,
+//         schoolName: school.School_Name,
+//       }))
+      
+//     });
+//   } catch (err) {
+//     console.error('Error fetching dashboard data:', err);
+//     res.status(500).json({ message: 'Error fetching dashboard data' });
+//   }
+// });
 
 
 router.get('/schoolData', async (req, res) => {

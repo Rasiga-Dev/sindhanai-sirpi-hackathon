@@ -437,6 +437,7 @@ const calculateAverage = (scores) => {
 // Accept a project as finalist
 
 router.get("/top-finalists", async (req, res) => {
+  console.log("Fetching top finalist projects based on jully marks...");
   try {
     const schools = await School.find({ "submissions.jullyMarks.average": { $exists: true, $ne: null } });
 
@@ -465,6 +466,7 @@ router.get("/top-finalists", async (req, res) => {
     });
 
     res.status(200).json(allJullyProjects);
+    console.log("Fetched jully mark projects:", allJullyProjects.length);
    
   } catch (error) {
     console.error("Error fetching jully mark projects:", error);
