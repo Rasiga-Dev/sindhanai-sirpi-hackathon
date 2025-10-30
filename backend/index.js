@@ -77,7 +77,7 @@ app.use('/api/jully', jullyRoute);
 
 
 // Download Template Route
-app.get('/api/download/template', (req, res) => {
+app.get('/download/template', (req, res) => {
   const filePath = path.join(__dirname, '../public/hackathon_template.pptx');
   res.download(filePath, 'hackathon_template.pptx', (err) => {
     if (err) {
