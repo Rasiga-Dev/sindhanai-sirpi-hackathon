@@ -341,13 +341,6 @@ export default function SchoolDashboard() {
                   </button>
 
                   <button
-                    onClick={() => setActiveTab('documentation')}
-                    className={`px-4 py-2 font-medium ${activeTab === 'documentation' ? 'border-b-4 border-red-800 text-red-800' : 'text-gray-600'}`}
-                  >
-                    Upload Documentation
-                  </button>
-
-                  <button
                     onClick={() => setActiveTab('account-form')}
                     className={`px-4 py-2 font-medium ${activeTab === 'account-form' ? 'border-b-4 border-red-800 text-red-800' : 'text-gray-600'}`}
                   >
