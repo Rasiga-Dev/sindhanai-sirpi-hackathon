@@ -18,12 +18,12 @@ import payment from './routes/payment.js';
 import dpm from './routes/dpm.js';
 // import jully from './routes/jully.js';
 import jullyRoute from './routes/jully.js';
+import fs from 'fs';
 
 
 // Required for __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 // Initialize the app
 const app = express();
 
@@ -35,8 +35,8 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Serve static files from "public" folder
-app.use('/public', express.static(path.join(__dirname, '../public')));
+// Serve static files from server/public (corrected)
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 
@@ -76,13 +76,22 @@ app.use('/api/jully', jullyRoute);
 
 
 
-// Download Template Route
-app.get('/download/template', (req, res) => {
-  const filePath = path.join(__dirname, '../public/hackathon_template.pptx');
+app.get('/api/download/template', (req, res) => {
+  console.log('📥 /api/download/template called');
+  const filePath = path.join(__dirname, 'public', 'hackathon_template.pptx');
+  console.log('Looking for file at:', filePath);
+
+  if (!fs.existsSync(filePath)) {
+    console.error('❌ Template not found at', filePath);
+    return res.status(404).json({ message: 'Template not found on server' });
+  }
+
   res.download(filePath, 'hackathon_template.pptx', (err) => {
     if (err) {
       console.error('❌ Download error:', err);
-      res.status(500).json({ message: 'Failed to download template' });
+      if (!res.headersSent) res.status(500).json({ message: 'Failed to download template' });
+    } else {
+      console.log('✅ Template sent successfully');
     }
   });
 });
