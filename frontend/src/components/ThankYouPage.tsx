@@ -2,8 +2,8 @@ import React from 'react';
 
 const ThankYouPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-lg text-center">
+    <div className="min-h-screen flex items-center justify-center p-6 mt-0">
+      <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-lg text-center mt-0">
         <div className="flex justify-center mb-6">
           <svg
             className="w-20 h-20 text-green-500"

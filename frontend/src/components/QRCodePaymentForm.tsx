@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,14 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import RazorpayButton from '../pages/RazorpayButton';
 
 interface QRCodePaymentFormProps {
+  initialTransactionId?: string;
   onNext: (data: { transactionId: string }) => void;
   onBack: () => void;
 }
 
-const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ onNext, onBack }) => {
-  const [transactionId, setTransactionId] = useState("");
+const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ initialTransactionId = '', onNext, onBack }) => {
+  const [transactionId, setTransactionId] = useState(initialTransactionId);
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setTransactionId(initialTransactionId);
+  }, [initialTransactionId]);
   const paymentData = {
     amount: "500.00",
     merchantId: "QeEvGPtIZUWyzG",
@@ -21,23 +26,23 @@ const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ onNext, onBack })
   };
 
   const handleConfirm = () => {
-  if (transactionId.trim() === "") {
-    toast.error("Please enter your Transaction ID before proceeding.");
-    return;
-  }
+    if (transactionId.trim() === "") {
+      toast.error("Please enter your Transaction ID before proceeding.");
+      return;
+    }
 
-  // Success toast
-  toast.success("Payment successful! Registration complete.");
+    // Success toast
+    toast.success("Payment successful! Registration complete.");
 
-  // Pass transaction ID to parent
-  onNext({ transactionId });
+    // Pass transaction ID to parent
+    onNext({ transactionId });
 
-  // ❌ Remove navigate('/dashboard') from here
-  // Project submission toast (optional)
-  setTimeout(() => {
-    toast.success("Project submitted successfully!");
-  }, 500);
-};
+    // ❌ Remove navigate('/dashboard') from here
+    // Project submission toast (optional)
+    setTimeout(() => {
+      toast.success("Project submitted successfully!");
+    }, 500);
+  };
 
 
   return (
@@ -95,24 +100,24 @@ const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ onNext, onBack })
       </div> */}
 
       <div className="flex justify-between mt-4">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-          >
-            Back
-          </button>
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+        >
+          Back
+        </button>
 
-          <button
-            type="submit"
-            className="px-4 py-2 bg-red-800 text-white rounded-md hover:bg-red-900"
-            onClick={handleConfirm}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-red-800 text-white rounded-md hover:bg-red-900"
+          onClick={handleConfirm}
+        >
+          Next
+        </button>
+      </div>
 
-      <ToastContainer  position="bottom-right"  autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 };

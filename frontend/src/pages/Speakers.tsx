@@ -66,13 +66,12 @@ export function Speakers() {
 
           return (
             <div key={index} className="space-y-4">
-              {/* Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 {/* Left column */}
                 <div className="flex justify-center items-center">
                   {isOdd ? (
-                    // Odd row: rank image on left
-                    <div className="w-100 h-100 flex items-center justify-center">
+                    // Odd row: rank image on left (USE SAME SIZE)
+                    <div className="w-100 h-100 md:w-100 md:h-100 flex items-center justify-center">
                       <img
                         src={rankImage}
                         alt={`Rank ${winner.rank}`}
@@ -90,13 +89,9 @@ export function Speakers() {
                         🏫 {winner.schoolName}
                       </div>
                       <p className="text-gray-500 mt-1">📍 {winner.District}</p>
-
                       <div className="flex flex-wrap gap-2 mt-2">
                         {winner.students.map((stu, i) => (
-                          <span
-                            key={i}
-                            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm"
-                          >
+                          <span key={i} className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">
                             {stu.name} ({stu.standard})
                           </span>
                         ))}
@@ -120,18 +115,15 @@ export function Speakers() {
                       <p className="text-gray-500 mt-1">📍 {winner.District}</p>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {winner.students.map((stu, i) => (
-                          <span
-                            key={i}
-                            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm"
-                          >
+                          <span key={i} className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">
                             {stu.name} ({stu.standard})
                           </span>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    // Even row: rank image on right
-                    <div className="w-40 h-40 flex items-center justify-center">
+                    // Even row: rank image on right (SAME SIZE)
+                    <div className="w-100 h-100 md:w-100 md:h-100 flex items-center justify-center">
                       <img
                         src={rankImage}
                         alt={`Rank ${winner.rank}`}
@@ -142,7 +134,6 @@ export function Speakers() {
                 </div>
               </div>
 
-              {/* Horizontal line between rows */}
               {index !== winners.length - 1 && <hr className="border-gray-300 mt-6" />}
             </div>
           );
