@@ -218,7 +218,79 @@ router.delete('/drafts/:udiseCode', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Error deleting draft' });
   }
 });
+// Create or update draft (upsert by udiseCode)
+// routes/schoolDrafts.js (update)
+// router.post('/drafts', async (req, res) => {
+//   try {
+//     const {
+//       udiseCode,
+//       guideTeacher,
+//       projectDetails,
+//       studentDetails,
+//       bmcDetails,
+//       transactionId,
+//       currentStep
+//     } = req.body;
 
+//     if (!udiseCode) return res.status(400).json({ message: 'udiseCode required' });
+//     if (!guideTeacher) return res.status(400).json({ message: 'guideTeacher required' });
+
+//     const update = {
+//       ...(projectDetails && { projectDetails }),
+//       ...(studentDetails && { studentDetails }),
+//       ...(bmcDetails && { bmcDetails }),
+//       ...(transactionId !== undefined && { transactionId }),
+//       currentStep: typeof currentStep === 'number' ? currentStep : undefined,
+//       lastUpdated: new Date()
+//     };
+
+//     Object.keys(update).forEach(key => update[key] === undefined && delete update[key]);
+
+//     const draft = await Draft.findOneAndUpdate(
+//       { udiseCode, guideTeacher }, // <-- composite key: udise + guideTeacher
+//       { $set: update, $setOnInsert: { udiseCode, guideTeacher } },
+//       { new: true, upsert: true, setDefaultsOnInsert: true }
+//     );
+
+//     return res.json({ success: true, draft });
+//   } catch (err) {
+//     console.error('Save draft error', err);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// });
+
+// // GET draft by udiseCode + guideTeacher (use query param)
+// router.get('/drafts/:udiseCode', async (req, res) => {
+//   try {
+//     const { udiseCode } = req.params;
+//     const guideTeacher = req.query.guideTeacher; // expect ?guideTeacher=Name
+
+//     if (!guideTeacher) {
+//       // Optionally: if no guideTeacher provided, return 400 or latest draft for udiseCode
+//       return res.status(400).json({ message: 'guideTeacher query param required' });
+//     }
+
+//     const draft = await Draft.findOne({ udiseCode, guideTeacher });
+//     if (!draft) return res.status(404).json({ message: 'Draft not found for this guide teacher' });
+//     return res.json(draft);
+//   } catch (err) {
+//     console.error('Load draft error', err);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// });
+
+
+// // Delete draft
+// router.delete('/drafts/:udiseCode', /*authMiddleware,*/ async (req, res) => {
+//   try {
+//     const { udiseCode } = req.params;
+//     await Draft.deleteOne({ udiseCode });
+//     return res.json({ success: true });
+//   } catch (err) {
+//     console.error('Delete draft error', err);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 router.post('/submit-idea', upload.none(), async (req, res) => {
   try {

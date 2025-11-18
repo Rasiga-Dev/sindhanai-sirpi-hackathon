@@ -41,6 +41,10 @@ const draftSchema = new mongoose.Schema({
     contentType: String,
     data: Buffer
   },
+  transactionId: {
+    type: String,
+    default: ''
+  },
   currentStep: {
     type: Number,
     default: 0
