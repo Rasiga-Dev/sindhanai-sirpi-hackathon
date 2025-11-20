@@ -7,8 +7,8 @@ import School from "../models/School.js";
 const router = express.Router();
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_RSfOyhW6bke3R6",
-  key_secret: "JWPiS2f3luk0KS9qdsqOJuOU",
+  key_id: "rzp_live_RhszuG7TTzQpya",
+  key_secret: "rj97TBYNKtaSvl77FycEu54e",
 });
 
 router.post("/payment", async (req, res) => {
