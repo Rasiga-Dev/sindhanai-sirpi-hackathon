@@ -24,7 +24,7 @@ const RazorpayButton = () => {
   const data = await response.json();
 
   const options = {
-    key: "rzp_test_RSfOyhW6bke3R6",
+    key: "rzp_live_RhszuG7TTzQpya",
     amount: data.amount,
     currency: data.currency,
     name: "Hackathon Project",

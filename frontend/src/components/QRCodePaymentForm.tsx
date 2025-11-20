@@ -21,7 +21,7 @@ const QRCodePaymentForm: React.FC<QRCodePaymentFormProps> = ({ initialTransactio
   }, [initialTransactionId]);
   const paymentData = {
     amount: "500.00",
-    merchantId: "QeEvGPtIZUWyzG",
+    merchantId: "Rby7NguDKlbuHA",
     description: "Hackathon Registration Fee"
   };
 
