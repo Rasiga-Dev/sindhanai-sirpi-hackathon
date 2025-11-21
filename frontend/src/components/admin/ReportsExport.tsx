@@ -11,6 +11,9 @@ const reports: ReportItem[] = [
   { label: "Schools List", path: "school-list" },
   { label: "Submitted Projects List", path: "submitted-projects" },
   { label: "Evaluators & Performance List", path: "evaluator-performance" },
+  { label: "Level 1 List", path: "level1-list" },
+  { label: "Level 2 List", path: "level2-list" },
+  { label: "Level 3 List", path: "level3-list" },
   { label: "Finalist List", path: "finalist-list" },
   { label: "Winners List", path: "winner-list" },
 ];
