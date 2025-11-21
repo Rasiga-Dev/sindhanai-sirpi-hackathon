@@ -1016,9 +1016,385 @@ router.get('/evaluator-performance', async (req, res) => {
   }
 });
 
+//4. Level1-list
+router.get('/level1-list', async (req, res) => {
+  try {
+    // find schools that have submissions
+    const schools = await School.find({ 'submissions.0': { $exists: true } }).lean();
 
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Level 1');
 
-// 4. Finalist List
+    // Only the requested columns
+    worksheet.columns = [
+      // School info
+      { header: 'School Name', key: 'schoolName', width: 30 },
+      { header: 'UDISE Code', key: 'udiseCode', width: 15 },
+      { header: 'District', key: 'district', width: 20 },
+      { header: 'Block', key: 'block', width: 20 },
+      { header: 'Address', key: 'address', width: 40 },
+      { header: 'HM Name', key: 'hmName', width: 20 },
+      { header: 'HM Mobile', key: 'hmMobile', width: 18 },
+
+      // Guide teacher(s)
+      { header: 'Guide Teachers (name | phone | email)', key: 'guideTeachers', width: 40 },
+
+      // Project details
+      { header: 'Project Title', key: 'projectTitle', width: 30 },
+      { header: 'Project Description', key: 'projectDesc', width: 50 },
+      { header: 'Problem Statement', key: 'problemStatement', width: 40 },
+      { header: 'Solution', key: 'solution', width: 40 },
+      { header: 'Team Size', key: 'teamSize', width: 12 },
+
+      // Students (all students in one cell)
+      { header: 'Students (name | fatherName | DOB | gender | standard | contact)', key: 'students', width: 60 },
+
+      // BMC details
+      { header: 'Customer Segments', key: 'customerSegments', width: 30 },
+      { header: 'Value Propositions', key: 'valuePropositions', width: 30 },
+      { header: 'Channels', key: 'channels', width: 25 },
+      { header: 'Customer Relationships', key: 'customerRelationships', width: 30 },
+      { header: 'Revenue Streams', key: 'revenueStreams', width: 25 },
+      { header: 'Key Resources', key: 'keyResources', width: 25 },
+      { header: 'Key Activities', key: 'keyActivities', width: 25 },
+      { header: 'Key Partners', key: 'keyPartners', width: 25 },
+      { header: 'Cost Structure', key: 'costStructure', width: 25 },
+
+      // Submission time
+      { header: 'Submitted At', key: 'submittedAt', width: 25 },
+    ];
+
+    // helper to format guide teachers
+    const formatGuideTeachers = (gtArr = []) => {
+      if (!Array.isArray(gtArr) || gtArr.length === 0) return '-';
+      return gtArr
+        .map(g => `${g.name || '-'} | ${g.phone || '-'} | ${g.email || '-'}`)
+        .join(' || ');
+    };
+
+    // helper to format students
+    const formatStudents = (stuArr = []) => {
+      if (!Array.isArray(stuArr) || stuArr.length === 0) return '-';
+      return stuArr
+        .map(s => `${s.name || '-'} | Father:${s.fatherName || '-'} | DOB:${s.dateOfBirth || '-'} | Gender:${s.gender || '-'} | Std:${s.standard || '-'} | Contact:${s.contactNumber || s.contact || '-'}`)
+        .join(' || ');
+    };
+
+    // iterate schools and their submissions
+    for (const school of schools) {
+      const submissions = Array.isArray(school.submissions) ? school.submissions : [];
+
+      for (const sub of submissions) {
+        // ONLY include submissions that are Level 1 and accepted
+        if (sub.finalStage === 'Level 1' && sub.evaluationStatus === 'accept') {
+          worksheet.addRow({
+            schoolName: school.School_Name || '-',
+            udiseCode: school.UDISE_Code ?? '-',
+            district: school.District || '-',
+            block: school.Block || '-',
+            address: school.Address || '-',
+            hmName: school.hmName || '-',
+            hmMobile: school.hmMobile || school.hmMobile || '-',
+
+            guideTeachers: formatGuideTeachers(school.guideTeachers),
+
+            projectTitle: sub.projectDetails?.title || '-',
+            projectDesc: sub.projectDetails?.description || '-',
+            problemStatement: sub.projectDetails?.problemStatement || '-',
+            solution: sub.projectDetails?.solution || '-',
+            teamSize: sub.projectDetails?.teamSize ?? '-',
+
+            students: formatStudents(sub.studentDetails),
+
+            customerSegments: sub.bmcDetails?.customerSegments || '-',
+            valuePropositions: sub.bmcDetails?.valuePropositions || '-',
+            channels: sub.bmcDetails?.channels || '-',
+            customerRelationships: sub.bmcDetails?.customerRelationships || '-',
+            revenueStreams: sub.bmcDetails?.revenueStreams || '-',
+            keyResources: sub.bmcDetails?.keyResources || '-',
+            keyActivities: sub.bmcDetails?.keyActivities || '-',
+            keyPartners: sub.bmcDetails?.keyPartners || '-',
+            costStructure: sub.bmcDetails?.costStructure || '-',
+
+            submittedAt: sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '-',
+          });
+        }
+      }
+    }
+
+    // prepare response headers and send workbook
+    const fileName = `level1_list_${new Date().toISOString().slice(0,10)}.xlsx`;
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Error generating Level 1 report:', err);
+    res.status(500).send('Error generating report');
+  }
+});
+
+//5. Level2-list
+router.get('/level2-list', async (req, res) => {
+  try {
+    // find schools that have submissions
+    const schools = await School.find({ 'submissions.0': { $exists: true } }).lean();
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Level 2');
+
+    // Only the requested columns
+    worksheet.columns = [
+      // School info
+      { header: 'School Name', key: 'schoolName', width: 30 },
+      { header: 'UDISE Code', key: 'udiseCode', width: 15 },
+      { header: 'District', key: 'district', width: 20 },
+      { header: 'Block', key: 'block', width: 20 },
+      { header: 'Address', key: 'address', width: 40 },
+      { header: 'HM Name', key: 'hmName', width: 20 },
+      { header: 'HM Mobile', key: 'hmMobile', width: 18 },
+
+      // Guide teacher(s)
+      { header: 'Guide Teachers (name | phone | email)', key: 'guideTeachers', width: 40 },
+
+      // Project details
+      { header: 'Project Title', key: 'projectTitle', width: 30 },
+      { header: 'Project Description', key: 'projectDesc', width: 50 },
+      { header: 'Problem Statement', key: 'problemStatement', width: 40 },
+      { header: 'Solution', key: 'solution', width: 40 },
+      { header: 'Team Size', key: 'teamSize', width: 12 },
+
+      // Students (all students in one cell)
+      { header: 'Students (name | fatherName | DOB | gender | standard | contact)', key: 'students', width: 60 },
+
+      // BMC details
+      { header: 'Customer Segments', key: 'customerSegments', width: 30 },
+      { header: 'Value Propositions', key: 'valuePropositions', width: 30 },
+      { header: 'Channels', key: 'channels', width: 25 },
+      { header: 'Customer Relationships', key: 'customerRelationships', width: 30 },
+      { header: 'Revenue Streams', key: 'revenueStreams', width: 25 },
+      { header: 'Key Resources', key: 'keyResources', width: 25 },
+      { header: 'Key Activities', key: 'keyActivities', width: 25 },
+      { header: 'Key Partners', key: 'keyPartners', width: 25 },
+      { header: 'Cost Structure', key: 'costStructure', width: 25 },
+
+      // Evaluation (requested)
+      { header: 'Evaluated By', key: 'evaluatedBy', width: 25 },
+      { header: 'Evaluation Scores (evaluator:score(status))', key: 'evaluationScores', width: 50 },
+      { header: 'Evaluation Score Status', key: 'evaluationScoreStatus', width: 20 },
+
+      // Submission time
+      { header: 'Submitted At', key: 'submittedAt', width: 25 },
+    ];
+
+    // helpers
+    const formatGuideTeachers = (gtArr = []) => {
+      if (!Array.isArray(gtArr) || gtArr.length === 0) return '-';
+      return gtArr
+        .map(g => `${g.name || '-'} | ${g.phone || '-'} | ${g.email || '-'}`)
+        .join(' || ');
+    };
+
+    const formatStudents = (stuArr = []) => {
+      if (!Array.isArray(stuArr) || stuArr.length === 0) return '-';
+      return stuArr
+        .map(s => `${s.name || '-'} | Father:${s.fatherName || '-'} | DOB:${s.dateOfBirth || '-'} | Gender:${s.gender || '-'} | Std:${s.standard || '-'} | Contact:${s.contactNumber || s.contact || '-'}`)
+        .join(' || ');
+    };
+
+    const formatEvalScores = (scores = []) => {
+      if (!Array.isArray(scores) || scores.length === 0) return '-';
+      return scores
+        .map(sc => `${sc.evaluatorName || '-'}:${sc.score ?? '-'} (${sc.status || '-'})`)
+        .join(' || ');
+    };
+
+    // iterate schools and their submissions
+    for (const school of schools) {
+      const submissions = Array.isArray(school.submissions) ? school.submissions : [];
+
+      for (const sub of submissions) {
+        // ONLY include submissions that are Level 2 and have evaluationScoreStatus "Evaluated"
+        if (sub.finalStage === 'Level 2' && sub.evaluationScoreStatus === 'Evaluated') {
+          worksheet.addRow({
+            schoolName: school.School_Name || '-',
+            udiseCode: school.UDISE_Code ?? '-',
+            district: school.District || '-',
+            block: school.Block || '-',
+            address: school.Address || '-',
+            hmName: school.hmName || '-',
+            hmMobile: school.hmMobile || '-',
+
+            guideTeachers: formatGuideTeachers(school.guideTeachers),
+
+            projectTitle: sub.projectDetails?.title || '-',
+            projectDesc: sub.projectDetails?.description || '-',
+            problemStatement: sub.projectDetails?.problemStatement || '-',
+            solution: sub.projectDetails?.solution || '-',
+            teamSize: sub.projectDetails?.teamSize ?? '-',
+
+            students: formatStudents(sub.studentDetails),
+
+            customerSegments: sub.bmcDetails?.customerSegments || '-',
+            valuePropositions: sub.bmcDetails?.valuePropositions || '-',
+            channels: sub.bmcDetails?.channels || '-',
+            customerRelationships: sub.bmcDetails?.customerRelationships || '-',
+            revenueStreams: sub.bmcDetails?.revenueStreams || '-',
+            keyResources: sub.bmcDetails?.keyResources || '-',
+            keyActivities: sub.bmcDetails?.keyActivities || '-',
+            keyPartners: sub.bmcDetails?.keyPartners || '-',
+            costStructure: sub.bmcDetails?.costStructure || '-',
+
+            evaluatedBy: (typeof sub.evaluatedBy === 'string' ? sub.evaluatedBy : (sub.evaluatedBy?.name || sub.assignedEvaluator || '-')),
+            evaluationScores: formatEvalScores(sub.evaluationScores),
+            evaluationScoreStatus: sub.evaluationScoreStatus || '-',
+
+            submittedAt: sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '-',
+          });
+        }
+      }
+    }
+
+    // send workbook
+    const fileName = `level2_list_${new Date().toISOString().slice(0,10)}.xlsx`;
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Error generating Level 2 report:', err);
+    res.status(500).send('Error generating report');
+  }
+});
+
+//6.level3-list
+router.get('/level3-list', async (req, res) => {
+  try {
+    // fetch schools that have submissions array
+    const schools = await School.find({ 'submissions.0': { $exists: true } }).lean();
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Level 3');
+
+    // ONLY the requested columns
+    worksheet.columns = [
+      // School basic info
+      { header: 'School Name', key: 'schoolName', width: 30 },
+      { header: 'UDISE Code', key: 'udiseCode', width: 15 },
+      { header: 'District', key: 'district', width: 20 },
+      { header: 'Block', key: 'block', width: 20 },
+      { header: 'Address', key: 'address', width: 40 },
+
+      // Guide teacher(s)
+      { header: 'Guide Teachers (name | phone | email)', key: 'guideTeachers', width: 40 },
+
+      // Project details
+      { header: 'Project Title', key: 'projectTitle', width: 30 },
+      { header: 'Project Description', key: 'projectDesc', width: 50 },
+      { header: 'Problem Statement', key: 'problemStatement', width: 40 },
+      { header: 'Solution', key: 'solution', width: 40 },
+      { header: 'Team Size', key: 'teamSize', width: 12 },
+
+      // Students
+      { header: 'Students (name | fatherName | DOB | gender | standard | contact)', key: 'students', width: 60 },
+
+      // BMC details
+      { header: 'Customer Segments', key: 'customerSegments', width: 30 },
+      { header: 'Value Propositions', key: 'valuePropositions', width: 30 },
+      { header: 'Channels', key: 'channels', width: 25 },
+      { header: 'Customer Relationships', key: 'customerRelationships', width: 30 },
+      { header: 'Revenue Streams', key: 'revenueStreams', width: 25 },
+      { header: 'Key Resources', key: 'keyResources', width: 25 },
+      { header: 'Key Activities', key: 'keyActivities', width: 25 },
+      { header: 'Key Partners', key: 'keyPartners', width: 25 },
+      { header: 'Cost Structure', key: 'costStructure', width: 25 },
+
+      // Evaluation details
+      { header: 'Evaluated By', key: 'evaluatedBy', width: 25 },
+      { header: 'Evaluation Scores (evaluator:score(status))', key: 'evaluationScores', width: 50 },
+
+      // averageFilter
+      { header: 'Average Filter', key: 'averageFilter', width: 15 },
+    ];
+
+    // helpers
+    const fmtGuideTeachers = (arr = []) => {
+      if (!Array.isArray(arr) || arr.length === 0) return '-';
+      return arr.map(g => `${g.name || '-'} | ${g.phone || '-'} | ${g.email || '-'}`).join(' || ');
+    };
+
+    const fmtStudents = (arr = []) => {
+      if (!Array.isArray(arr) || arr.length === 0) return '-';
+      return arr
+        .map(s => `${s.name || '-'} | Father:${s.fatherName || '-'} | DOB:${s.dateOfBirth || '-'} | Gender:${s.gender || '-'} | Std:${s.standard || '-'} | Contact:${s.contactNumber || s.contact || '-'}`)
+        .join(' || ');
+    };
+
+    const fmtEvalScores = (arr = []) => {
+      if (!Array.isArray(arr) || arr.length === 0) return '-';
+      return arr.map(e => `${e.evaluatorName || '-'}:${e.score ?? '-'} (${e.status || '-'})`).join(' || ');
+    };
+
+    // iterate and filter
+    for (const school of schools) {
+      const subs = Array.isArray(school.submissions) ? school.submissions : [];
+
+      for (const sub of subs) {
+        // ONLY include when averageFilter is 'filtered' AND finalStage is 'Level 3' (if you want to ensure Level 3)
+        // If you don't want to check finalStage, remove that part.
+        if (sub.averageFilter === 'filtered' /* && sub.finalStage === 'Level 3' */) {
+          worksheet.addRow({
+            schoolName: school.School_Name || '-',
+            udiseCode: school.UDISE_Code ?? '-',
+            district: school.District || '-',
+            block: school.Block || '-',
+            address: school.Address || '-',
+
+            guideTeachers: fmtGuideTeachers(school.guideTeachers),
+
+            projectTitle: sub.projectDetails?.title || '-',
+            projectDesc: sub.projectDetails?.description || '-',
+            problemStatement: sub.projectDetails?.problemStatement || '-',
+            solution: sub.projectDetails?.solution || '-',
+            teamSize: sub.projectDetails?.teamSize ?? '-',
+
+            students: fmtStudents(sub.studentDetails),
+
+            customerSegments: sub.bmcDetails?.customerSegments || '-',
+            valuePropositions: sub.bmcDetails?.valuePropositions || '-',
+            channels: sub.bmcDetails?.channels || '-',
+            customerRelationships: sub.bmcDetails?.customerRelationships || '-',
+            revenueStreams: sub.bmcDetails?.revenueStreams || '-',
+            keyResources: sub.bmcDetails?.keyResources || '-',
+            keyActivities: sub.bmcDetails?.keyActivities || '-',
+            keyPartners: sub.bmcDetails?.keyPartners || '-',
+            costStructure: sub.bmcDetails?.costStructure || '-',
+
+            evaluatedBy: (typeof sub.evaluatedBy === 'string' ? sub.evaluatedBy : (sub.evaluatedBy?.name || sub.assignedEvaluator || '-')),
+            evaluationScores: fmtEvalScores(sub.evaluationScores),
+
+            averageFilter: sub.averageFilter || '-',
+          });
+        }
+      }
+    }
+
+    // send workbook
+    const fileName = `level3_list_${new Date().toISOString().slice(0,10)}.xlsx`;
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Error generating Level 3 report:', err);
+    res.status(500).send('Error generating report');
+  }
+});
+
+// 7. Finalist List
 router.get('/finalist-list', async (req, res) => {
   try {
     // Fetch schools that have submissions
@@ -1182,7 +1558,7 @@ router.get('/finalist-list', async (req, res) => {
 });
 
 
-// Winner List API
+// 8. Winner List API
 router.get('/winner-list', async (req, res) => {
   try {
     // 1. Fetch schools having submissions with rank
