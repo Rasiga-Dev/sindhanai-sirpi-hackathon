@@ -1086,7 +1086,7 @@ router.get('/level1-list', async (req, res) => {
 
       for (const sub of submissions) {
         // ONLY include submissions that are Level 1 and accepted
-        if (sub.finalStage === 'Level 1' && sub.evaluationStatus === 'accept') {
+        if (sub.evaluationStatus === 'accept') {
           worksheet.addRow({
             schoolName: school.School_Name || '-',
             udiseCode: school.UDISE_Code ?? '-',
@@ -1216,7 +1216,7 @@ router.get('/level2-list', async (req, res) => {
 
       for (const sub of submissions) {
         // ONLY include submissions that are Level 2 and have evaluationScoreStatus "Evaluated"
-        if (sub.finalStage === 'Level 2' && sub.evaluationScoreStatus === 'Evaluated') {
+        if (sub.evaluationScoreStatus === 'Evaluated') {
           worksheet.addRow({
             schoolName: school.School_Name || '-',
             udiseCode: school.UDISE_Code ?? '-',
