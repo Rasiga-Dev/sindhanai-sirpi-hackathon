@@ -94,7 +94,7 @@ router.post('/register', async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'vosatech212@gmail.com',
+      to: evaluator.email,
       subject: 'New Evaluator Registration',
       html: `
         <h2>New Evaluator Registration</h2>

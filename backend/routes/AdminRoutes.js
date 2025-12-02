@@ -536,7 +536,7 @@ router.post("/notify-finalist/:projectId", async (req, res) => {
     }
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || "karthikraj825@gmail.com",
+      from: process.env.EMAIL_USER || "vosatech212@gmail.com",
       to: school.Email_ID,
       subject: `🎉 Congratulations from Sindhanai Sirpi Hackathon!`,
       html: `
