@@ -63,7 +63,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, phone,district, expertise } = req.body;
+    const { username, email, phone, district, expertise } = req.body;
 
 
     // Check if username or email already exists
@@ -91,6 +91,19 @@ router.post('/register', async (req, res) => {
       evaluator: nextEvaluatorValue,
     });
     await evaluator.save();
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: 'vosatech212@gmail.com',
+      subject: 'New Evaluator Registration',
+      html: `
+        <h2>New Evaluator Registration</h2>
+        <p>Your Username: ${phone}</p>
+        <p>Your Password : ${phone}</p>
+        <p>Please review this registration in the admin dashboard.</p>
+      `
+    });
+
 
     res.status(201).json({
       message: 'Registration successful. Please wait for admin approval.',
@@ -176,17 +189,17 @@ router.put('/approved/:id', authenticateToken, isAdmin, async (req, res) => {
     evaluator.status = 'approved';
     await evaluator.save();
 
-    // // Send approval email
-    // await transporter.sendMail({
-    //   from: process.env.EMAIL_USER,
-    //   to: evaluator.email,
-    //   subject: 'Evaluator Registration Approved',
-    //   html: `
-    //     <h2>Registration Approved</h2>
-    //     <p>Dear ${evaluator.name},</p>
-    //     <p>Your registration as an evaluator has been approved. You can now log in to your account.</p>
-    //   `
-    // });
+    // Send approval email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: evaluator.email,
+      subject: 'Evaluator Registration Approved',
+      html: `
+        <h2>Registration Approved</h2>
+        <p>Dear ${evaluator.name},</p>
+        <p>Your registration as an evaluator has been approved. You can now log in to your account.</p>
+      `
+    });
 
     res.json({ message: 'Evaluator approved successfully' });
   } catch (error) {
