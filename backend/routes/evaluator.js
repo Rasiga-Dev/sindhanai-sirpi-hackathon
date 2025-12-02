@@ -196,7 +196,7 @@ router.put('/approved/:id', authenticateToken, isAdmin, async (req, res) => {
       subject: 'Evaluator Registration Approved',
       html: `
         <h2>Registration Approved</h2>
-        <p>Dear ${evaluator.name},</p>
+        <p>Dear Evaluator,</p>
         <p>Your registration as an evaluator has been approved. You can now log in to your account.</p>
       `
     });
