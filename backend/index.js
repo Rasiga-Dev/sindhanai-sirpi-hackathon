@@ -51,22 +51,17 @@ app.get('/files/:filename', (req, res) => {
 
 
 // MongoDB Connection
-<<<<<<< HEAD
+
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://Hackathon:Hackathon%402026@cluster0.trwdeou.mongodb.net/Hackathon';
-=======
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://rrasigaa:kdjOquMpn3AQj2xx@cluster0.mu6pvdv.mongodb.net/Hackathon';
->>>>>>> 600ec96e97f7133368dbf94a58285449fc55b983
+
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-<<<<<<< HEAD
+
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
-=======
-.then(() => console.log('✅ Connected to MongoDB'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
->>>>>>> 600ec96e97f7133368dbf94a58285449fc55b983
+
 
 // API Routes
 app.use('/api/schools', schoolRoutes);
