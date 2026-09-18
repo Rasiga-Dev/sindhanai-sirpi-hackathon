@@ -63,20 +63,44 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, phone, district, expertise } = req.body;
+    const {
+      username,
+      email,
+      phone,
+      district,
+      expertise
+    } = req.body;
 
-    // Check if username or email already exists
+    console.log('📝 Evaluator registration started');
+    console.log('Username:', username);
+    console.log('Email:', email);
+    console.log('Phone:', phone);
+    console.log('District:', district);
+    console.log('Expertise:', expertise);
+
+    // ==========================================
+    // 1. CHECK EXISTING EVALUATOR
+    // ==========================================
+
     const existingEvaluator = await Evaluator.findOne({
-      $or: [{ email }, { username }]
+      $or: [
+        { email: email },
+        { username: username }
+      ]
     });
 
     if (existingEvaluator) {
+      console.log('⚠️ Evaluator already exists');
+
       return res.status(400).json({
         message: 'An account with this email or username already exists'
       });
     }
 
-    // Find max evaluator value in DB
+    // ==========================================
+    // 2. GENERATE NEXT EVALUATOR ID
+    // ==========================================
+
     const lastEvaluator = await Evaluator.findOne()
       .sort({ evaluator: -1 })
       .exec();
@@ -85,51 +109,133 @@ router.post('/register', async (req, res) => {
       ? lastEvaluator.evaluator + 1
       : 1;
 
-    // Create new evaluator
+    console.log('🔢 New Evaluator ID:', nextEvaluatorValue);
+
+    // ==========================================
+    // 3. CREATE EVALUATOR
+    // ==========================================
+
     const evaluator = new Evaluator({
       username,
       email,
       phone,
       district,
       expertise,
-      evaluator: nextEvaluatorValue,
+      evaluator: nextEvaluatorValue
     });
+
+    // ==========================================
+    // 4. SAVE TO MONGODB
+    // ==========================================
 
     await evaluator.save();
 
-    // Send registration email
-    await transporter.sendMail({
-      from: process.env.BREVO_FROM_EMAIL,
-      to: evaluator.email,
-      subject: 'New Evaluator Registration',
-      html: `
-        <h2>New Evaluator Registration</h2>
+    console.log('✅ Evaluator saved successfully');
+    console.log('🆔 MongoDB ID:', evaluator._id);
+    console.log('📧 Email to send:', evaluator.email);
+    console.log('📤 From email:', process.env.BREVO_FROM_EMAIL);
 
-        <p><strong>Username:</strong> ${username}</p>
-        <p><strong>Password:</strong> ${phone}</p>
-        <p><strong>Evaluator ID:</strong> ${nextEvaluatorValue}</p>
+    // ==========================================
+    // 5. SEND REGISTRATION EMAIL
+    // ==========================================
 
-        <p>
-          Your registration has been received successfully.
-          Please wait for admin approval.
-        </p>
-      `
-    });
+    try {
+      console.log('📧 Starting Brevo sendMail...');
 
-    res.status(201).json({
+      const mailInfo = await transporter.sendMail({
+        from: process.env.BREVO_FROM_EMAIL,
+        to: evaluator.email,
+        subject: 'New Evaluator Registration',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+
+            <h2 style="color: #b91c1c;">
+              New Evaluator Registration
+            </h2>
+
+            <p>Dear <strong>${evaluator.username}</strong>,</p>
+
+            <p>
+              Your evaluator registration has been received successfully.
+            </p>
+
+            <hr>
+
+            <p>
+              <strong>Evaluator ID:</strong>
+              ${evaluator.evaluator}
+            </p>
+
+            <p>
+              <strong>Username:</strong>
+              ${evaluator.username}
+            </p>
+
+            <p>
+              <strong>Password:</strong>
+              ${evaluator.phone}
+            </p>
+
+            <p>
+              <strong>District:</strong>
+              ${evaluator.district}
+            </p>
+
+            <p>
+              <strong>Expertise:</strong>
+              ${Array.isArray(evaluator.expertise)
+                ? evaluator.expertise.join(', ')
+                : evaluator.expertise}
+            </p>
+
+            <hr>
+
+            <p style="color: #555;">
+              Your registration is currently pending admin approval.
+              You will receive another email once your account has been approved.
+            </p>
+
+            <p>
+              Thank you.
+            </p>
+
+          </div>
+        `
+      });
+
+      console.log('✅ Registration email sent successfully');
+      console.log('📨 Message ID:', mailInfo.messageId);
+
+    } catch (emailError) {
+      console.error('❌ EMAIL SENDING ERROR');
+      console.error('Error message:', emailError.message);
+      console.error('Full email error:', emailError);
+    }
+
+    // ==========================================
+    // 6. SEND SUCCESS RESPONSE
+    // ==========================================
+
+    return res.status(201).json({
       message: 'Registration successful. Please wait for admin approval.',
-      evaluatorValue: nextEvaluatorValue,
+      evaluatorValue: nextEvaluatorValue
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    // ==========================================
+    // MAIN REGISTRATION ERROR
+    // ==========================================
 
-    res.status(500).json({
-      message: 'Server error'
+    console.error('❌ REGISTRATION ERROR');
+    console.error('Error message:', error.message);
+    console.error('Full error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message
     });
   }
 });
-
 
 
 
