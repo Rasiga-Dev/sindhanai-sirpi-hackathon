@@ -19,6 +19,7 @@ import dpm from './routes/dpm.js';
 // import jully from './routes/jully.js';
 import jullyRoute from './routes/jully.js';
 import fs from 'fs';
+import './config/nodemailer.js';
 
 
 // Required for __dirname in ES module

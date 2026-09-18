@@ -65,7 +65,6 @@ router.post('/register', async (req, res) => {
   try {
     const { username, email, phone, district, expertise } = req.body;
 
-
     // Check if username or email already exists
     const existingEvaluator = await Evaluator.findOne({
       $or: [{ email }, { username }]
@@ -78,10 +77,15 @@ router.post('/register', async (req, res) => {
     }
 
     // Find max evaluator value in DB
-    const lastEvaluator = await Evaluator.findOne().sort({ evaluator: -1 }).exec();
-    const nextEvaluatorValue = lastEvaluator ? lastEvaluator.evaluator + 1 : 1;
+    const lastEvaluator = await Evaluator.findOne()
+      .sort({ evaluator: -1 })
+      .exec();
 
-    // Create new evaluator with incremented value
+    const nextEvaluatorValue = lastEvaluator
+      ? lastEvaluator.evaluator + 1
+      : 1;
+
+    // Create new evaluator
     const evaluator = new Evaluator({
       username,
       email,
@@ -90,28 +94,39 @@ router.post('/register', async (req, res) => {
       expertise,
       evaluator: nextEvaluatorValue,
     });
+
     await evaluator.save();
 
+    // Send registration email
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.BREVO_FROM_EMAIL,
       to: evaluator.email,
       subject: 'New Evaluator Registration',
       html: `
         <h2>New Evaluator Registration</h2>
-        <p>Your Username: ${phone}</p>
-        <p>Your Password : ${phone}</p>
-        <p>Please review this registration in the admin dashboard.</p>
+
+        <p><strong>Username:</strong> ${username}</p>
+        <p><strong>Password:</strong> ${phone}</p>
+        <p><strong>Evaluator ID:</strong> ${nextEvaluatorValue}</p>
+
+        <p>
+          Your registration has been received successfully.
+          Please wait for admin approval.
+        </p>
       `
     });
-
 
     res.status(201).json({
       message: 'Registration successful. Please wait for admin approval.',
       evaluatorValue: nextEvaluatorValue,
     });
+
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error' });
+
+    res.status(500).json({
+      message: 'Server error'
+    });
   }
 });
 
@@ -191,7 +206,7 @@ router.put('/approved/:id', authenticateToken, isAdmin, async (req, res) => {
 
     // Send approval email
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.BREVO_FROM_EMAIL,
       to: evaluator.email,
       subject: 'Evaluator Registration Approved',
       html: `
@@ -219,7 +234,7 @@ router.put('/rejected/:id', authenticateToken, isAdmin, async (req, res) => {
 
     // Send rejection email
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.BREVO_FROM_EMAIL,
       to: evaluator.email,
       subject: 'Evaluator Registration Status',
       html: `
